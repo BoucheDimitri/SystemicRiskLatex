@@ -1,0 +1,701 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+%\usepackage[francais]{babel}
+\usepackage[T1]{fontenc}
+
+\usepackage{biblatex}
+\addbibresource{biblio.bib}
+\usepackage{indentfirst}
+\usepackage{stmaryrd}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage[toc,page]{appendix} 
+\usepackage{graphicx}
+\newcommand{\indep}{\rotatebox[origin=c]{90}{$\models$}}
+
+%Commands to emphasize some text %One colour per person.
+\usepackage{color}									
+\newcommand{\bluenote}[1]{\textcolor{blue}{\textit{Arnaud : #1}}} 	
+%red ? darkgreen ? purple ? choose your colour
+\newcommand{\rednote}[1]{\textcolor{red}{\textit{Hubert : #1}}} 
+\definecolor{darkgreen}{rgb}{0,0.35,0}
+\newcommand{\othernote}[1]{\textcolor{darkgreen}{\textit{Dimitri: #1}}}
+
+\newcommand{\wh}{\widehat}
+
+
+\title{Crisis, contagion and containment policies in financial networks : A dynamic approach}
+
+\begin{document}
+
+\othernote{Mettre des points à la fin des équations lorsqu'elles finissent des phrases}
+
+\maketitle
+
+\section{Introduction}
+
+We wish to create a model of financial networks that can be used for any structure of network. Each node's state is given by a simplified balance sheet from which an equity can be computed. This is the quantity that determines whether a node is in default. We want to only consider solvency defaults and not liquidity default which cannot happen in our setting.  We will then simulate the propagation of different types of shocks on this network in a dynamic fashion going one step further in comparison to the existing literature that uses either a fixed small number of periods (\cite{10}) or a "killing cascade" as dynamics (\cite{1.1}, \cite{11})---after an initial shock, banks may default, we check if those defaults bring about new defaults, and so on until no more banks are defaulting. Having a real time dynamics will open the way for the study of dynamic resource allocations strategy on the network to try to contain potential systemic events in the fashion of \cite{5.2}.
+
+\section{Economic description of the model}
+
+\paragraph{}
+We focus our analysis on banks and the only type of credit we consider is inter-bank loans. Banks do not take stakes in one another. The outside economy is simply modelled as a set of risky assets which yields random returns, they could represent for instance loans to companies, to individuals, investment in public projects... as well as financial products.
+
+\subsection{Banks}
+
+\subsubsection{Balance sheet representation}
+
+\paragraph{}
+Let $n$ be the number of banks in the network. At each time $t$, bank $j$ is represented as a simplified balance sheet : 
+
+
+\begin{center}
+\begin{tabular}{|c|c|}
+    \hline
+    Assets $(\mathcal{A}_t^i)$ & Liabilities $(\mathcal{L}_t^i)$ \\
+    \hline
+    Reserve $(R_t^i)$ & Equity $(E_t^i)$\\
+    Inter-bank loans $(L_t^i)$ & Inter-bank debts $(D_t^i)$\\
+    Portfolio $(P_t^i)$ & \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\begin{itemize}
+    \item On the assets side : 
+    \begin{itemize}
+        \item Reserve $R_t^i$ is the amount of reserves, a fraction or the totality of them may be kept in a central bank.
+        \item $L_t^i$ corresponds to the cumulative face-value of loans going from bank $i$ to other banks. Also, let us denote by $L_t^{ij}$ the face-value of the loan going from bank $i$ to $j$. Thus $L_t^i = \sum_{j=1}^nL_t^{ij} $
+        \item Portfolio $P_t^j$ is the amount of money invested in the economy --- more on that in section \ref{portfolio and investment opportunities}.
+    \end{itemize}
+    \item On the liabilities side : 
+        \begin{itemize}
+        \item Equity $E_t^i$ is equal to the assets minus the liabilities. Thus it is when equity goes under 0 that a bank is said to go bankrupt.
+        \item $D_t^i$ corresponds to the cumulative face-value of the loans coming from other banks to bank $i$. Thus $D_t^i = \sum_{k=1}^{n} L^{ki}_t$.
+    \end{itemize}
+\end{itemize}
+
+
+Let us denote by : 
+
+\begin{itemize}
+
+    \item $L_t \in \mathcal{M}_{n, n}(\mathbb{R^+})$ the matrix of inter-bank loans which entries are the $L_t^{ij}$. Two important remarks : 
+        \begin{itemize}
+            \item In order to simplify the graph as much as possible, loans and debts will be netted, which means that $L_t^{ij} > 0 \Rightarrow L_t^{ji}=0$. Given a matrix $L_t$, we can obtain its netted version $L_t'$ using component-wise maximum by doing the following operation : $$L_t' = \max(\mathbf{0}_{n, n}, L_t - L_t^T)$$
+            Where $\mathbf{0}_{n, n} \in \mathcal{M}_{n, n}(\mathbb{R})$ is the matrix full of zeros.
+            \item The matrix $L_t$ contains all the information on the graph at time $t$, thus no need to have a debt matrix since it is simply equal to $L_t^T$, the transposed version of $L_t$.
+        \end{itemize}
+    \item $E_t \in \mathcal{M}_{n, 1}(\mathbb{R})$ the vector of equities which $i$-th element is $E_t^i$
+    \item $R_t \in \mathcal{M}_{n, 1}(\mathbb{R})$ the vector of reserves which $i$-th element is $R_t^i$
+    
+\end{itemize}
+
+\paragraph{}
+\textit{Remark : the matrix $L_t$  captures the structure of the graph. We will consider it given at first. In the simulation stages, we may test different random graph initialization as done in \cite{11}}
+
+\subsubsection{Interest rates}
+
+\paragraph{}
+We introduce the inter-bank interest rate $r^i_t$ which determines the cost of borrowing for bank $i$ at time $t$. Its existence is justified by the extra risk taken when lending money. We make several assumptions for now which we may relax later :
+\begin{itemize}
+    \item Interest rates are deterministic
+    \item $r^j_t$ does not depend on time, thus we will omit the time-index $r^i_t = r^i$
+    \item $\forall i \in \llbracket 1, n \rrbracket,~~ r^i = r $, thus every bank can borrow money for the same interest rate $r$ to other banks.
+\end{itemize}
+
+
+\subsection{Portfolios and investment opportunities}\label{portfolio and investment opportunities}
+
+\subsubsection{Risky assets}
+
+\paragraph{}
+There are $m$ risky assets in the economy. We take a wide definition of risky assets which entails productive investments such as loans to companies or individuals, investments in public projects... Thus risky assets are not necessarily stocks or financial products although they can be. The only fundamental conditions an asset need to match the definition are :
+\begin{itemize}
+    \item to be outside of the network of banks
+    \item to be risky to some extent
+\end{itemize}
+
+Each risky assets has a time-dependant valuation. For a given $l \in \llbracket 1, m \rrbracket $, let us denote by $X_t^l$ this price. Our model is in discrete time.
+
+\paragraph{}
+For now, those investments do not yield dividend. As a consequence gains (resp. losses) only come from increases (resp. drops) in the valuations. We define the returns : 
+$$\omega_{t-1}^l = \frac{X_t^l - X_{t-1}^l}{X_{t-1}^l}$$
+
+We model them using independent Gaussian random variables.
+    $$\omega_{t-1}^l \sim \mathcal{N}(\mu_l, \sigma_l^2)$$
+    
+We denote by $\omega_t$ the vector of returns. Since its components are Gaussian and independent, this is a Gaussian vector with :
+    \begin{itemize}
+        \item Mean vector $\mu \in \mathcal{M}_{m, 1}(\mathbb{R})$
+        \item Covariance matrix $\Sigma = Diag[(\sigma_l^2)_{1\leq l \leq m}] \in \mathcal{M}_{m, m}(\mathbb{R}^+)$.
+    \end{itemize}
+    
+    $$\omega_{t-1} \sim \mathcal{N}(\mu, \Sigma)$$
+
+Using returns, we have the following relation for prices evolution :
+    
+    $$ X_t^l = X_{t-1}^l (1 + \omega^l_t) $$
+    
+We make the assumptions that returns are independents across time :
+    
+    $$ \forall t \neq t',~ w_{t-1} \indep w_{t-1'} $$
+    
+
+  %Those investment opportunities are illiquid meaning that in the case of a liquidation, some kind of discount factor is to be applied upon selling. For instance we could multiply it by $0 < \xi < 1$. In a more complex version of the model, to account for the effect of fire sales on the value of the assets, the accounting price may itself drop as a function of the amount of the asset that is being liquidated at step $t$.
+    
+
+\subsubsection{Bank's portfolios and valuation}\label{ptfsubsub}
+
+\paragraph{}
+Banks invest in those risky assets. Let us denote by $Q_t^i \in \mathcal{M}_{1, m}(\mathbb{R}^+)$ the vector which entry $Q_t^{il}$ is number of unit of product $l$ that bank $i$ has in its portfolio at time $t$. The matrix $Q_t \in \mathcal{M}_{n,m}(\mathbb{R}^+)$ is the matrix which rows are the $(Q_t^i)_{1 \leq j \leq n}$.
+    
+\paragraph{}
+As a consequence, the value of $i$'s portfolio is given by : $P_t^{i} = Q_t^i X_t$. The latter can be written in matrix form : $P_t = Q_t X_t $, with $P_t \in \mathcal{M}_{n, 1}(\mathbb{R}^+)$ being the portfolio vector.
+    
+%\subsubsection{Justifications for the extra-complexity}
+
+%\paragraph{}
+%Why does it appear interesting ?
+
+%\begin{itemize}
+%    \item We can model a more or less diverse economy which adds correlations between the state of nodes which have similar investment structures (over-exposed banks to bubbly mortgage-backed securities is for instance a very un-diversified economy).
+%    \item We can generate "local" or "global" shocks by applying shocks on a given group of assets or on the whole set of assets. This could account for instance for crisis striking only one sector of the economy.
+%\end{itemize}
+
+
+
+\section{General dynamics of the system}
+
+\subsection{Sequence of events}
+
+\paragraph{}
+In this subsection, we establish the chronology of events without giving the equations. Since several operations take place within a given time-lapse $t$ the ordering of events need to be precised. The detailed equations will be detailed later---at each stage a reference points to the appropriate section/subsection.
+
+\begin{itemize}
+
+\item \textbf{Stage 1 : updates} (detailed in \ref{updates}). At the beginning of this stage, the state of a bank is given by the vector $(E^i_{t-1}, D^i_{t-1}, R^i_{t-1}, P^i_{t-1}, L^i_{t-1})$. The following operations are then carried out
+\begin{itemize}
+    \item If banks have defaulted in the previous periods, the default is now effective and the creditors of the defaulted banks take the corresponding losses.
+    \item The reserves are updated: banks pay interest rates on inter-bank loans and if banks have defaulted in the previous periods, proceedings from liquidation are added to reserves. 
+    \item The valuation of the risky assets are updated and the value of portfolios are changed accordingly.
+\end{itemize}
+
+At the end of this stage, the state of a bank is given by a vector of five variables :
+$(\widehat{E}^i_t, \widehat{D}^i_t, \widehat{R}^i_t, \widehat{P}^i_t, \widehat{L}^i_t)$.
+
+\othernote{Mettre des chapeaux pour toutes les variables. }
+
+\othernote{Definition : a bank defaults when...}
+
+\item \textbf{Stage 2 : checking for default}. Banks for which $E_t^i \leq \bar{E}^i$ declare
+default and are liquidated (see section \ref{dynamic with bankruptcy} for the detailed processes of liquidation). Although their defaulting is not public information yet, it will become so at the beginning of the next period. The vector $\bar{E}$ which components are the $\bar{E}^i$ is a minimal threshold value for the equity of each bank. It enables us to implicitly include deposits from investors or individuals from outside the system in the balance sheets of banks.
+
+\othernote{On sait d'ores et déjà que D, L et E au temps t sont les valeurs chapeaux, mais d'un point de vue formalisme mieux vaut garder les chapeaux pour toutes les variables par soucis de clareté}
+
+\item \textbf{Stage 3 : balance sheet management} (detailed in \ref{balance_sheet_management})
+Banks readjust between portfolio and reserves according to (detailed in \ref{ConstraintsInitialConditions}):
+\begin{itemize}
+    \item The reserves rule
+    \item The financial choice for the portfolio
+\end{itemize}
+
+At the end of the stage, the state of a bank is given by the 5 state variables $(E^i_t, D^i_t, R^i_t, P^i_t, L^i_t)$
+
+\end{itemize}
+
+\subsection{Viability conditions}\label{ConstraintsInitialConditions}
+
+\paragraph{}
+We need to introduce additional hypothesis, initial conditions and constraints in order to maintain our model's coherence. 
+
+\begin{itemize}
+
+\item We assume that banks cannot have a negative expected variation of equity. Even though they are unidentified and not included in our model, we can assume that there are shareholders who own the banks. They indeed want their shares to gain value which justify our hypothesis on the variation of equity. This is the subject of section \ref{expected losers}.
+ 
+\item If some banks have borrowed more than they have lent so as to invest in their portfolio section, their reserves will deplete mechanically after a given number of periods. As a consequence, we need to define transfer rules between portfolio and reserves. We thus introduce the reserve rule and the financial choice in \ref{subsub: rules and conditions}.
+
+\item We make the assumption that banks can sell freely assets from their portfolio as a regular operation of management without paying any fees or having any price impact. This seems to be a reasonable hypothesis since only small amounts of risky assets are bought and sold in a usual financial market context in order to obtain the chosen portfolio. Also, we do not impose integer-valued quantities. 
+
+
+\end{itemize}
+
+
+%\paragraph{}
+%As a consequence, we necessarily need to relax partially the illiquidity assumptions regarding portfolios. Let us assume that small amounts of portfolio can be sold in normal conditions with no discount factor applied. We thus keep the discount selling factor $\xi$ only when the portfolio is sold in a liquidation setup. This makes sense since in the latter case, the quantity sold is very large - which mechanically implies significant market impact - and the sale is made in a short period of time in a panicking market setup whereas in the former case small amounts are sold in a usual market setup. 
+
+\subsubsection{Bank should have a positive expected net-worth delta}\label{expected losers}
+
+\paragraph{Expected returns vs interest rates}
+Since investment opportunities' returns are uncertain, investment opportunities must offer a risk premium---although loans to other banks are risky too they are obviously less so . This implies a first condition on the means $\mu$ of the vector of returns :
+
+    $$ \forall l \in \llbracket 1, m \rrbracket,~ \mu_l \geq r $$
+    
+    
+\paragraph{Balance sheets coherence}
+Thus it can be interesting for a bank to borrow money from other banks in order to invest. Although it may do so only in such a way that it gains money on average---where $\mathcal{F}_t$ is the information available up to time $t$  :
+
+$$ \mathbb{E}[E_t ^i|\mathcal{F}_{t-1}] \geq E_{t-1}^i $$
+
+Let us remark first that since $E_{t-1}^i \geq \bar{E}^i$, this implies that a bank that has not defaulted in $t-1$ cannot be expected to default in $t$.
+
+\paragraph{}
+Applying expectation conditionally on $\mathcal{F}_t$ on to (\ref{eq:eqtdyna}) we get : 
+
+$$\mathbb{E}[E_t^i|\mathcal{F}_{t-1}] = E_{t-1}^i + rL_{t-1}^i - rD_{t-1}^i + \sum_{l=1}^{m} Q_{t-1}^{il} X_{t-1}^l \mathbb{E}[\omega_t^l|\mathcal{F}_{t-1}]$$
+
+Which is equivalent to :
+
+$$\mathbb{E}[E_t ^i|\mathcal{F}_{t-1}] - E_{t-1} ^i = rL_{t-1}^i - rD_{t-1}^i + \sum_{l=1}^{m} Q_{t-1}^{il} X^l_{t-1}\mu_l$$
+
+Thus the condition is :
+
+$$rL_{t-1}^i + \sum_{l=1}^{m} Q_{t-1}^{il} X^l_{t-1}\mu_l \geq rD_{t-1}^i $$
+
+Although this condition may prove too difficult to enforce at each step. We will thus consider only its initial version :
+
+\begin{equation}\label{eq:nolosers}
+rL_0^i + \sum_{l=1}^{m} Q_0^{il} X_0^l\mu_l \geq rD_0^i
+\end{equation}
+
+
+\subsubsection{Regulation rules and management conditions}\label{subsub: rules and conditions}
+
+%\paragraph{}
+%In order to avoid liquidity problems, and make sure that each bank can pay its interest rates to its creditors, we must add rules of transfers between reserves (cash) and portfolio. 
+
+%\paragraph{}
+%One option is to introduce a regulatory reserves threshold $\rho$ stating that at each time banks must satisfy : 
+
+%$$R^i_t \geq \rho D^i_t$$
+
+%\paragraph{}
+%If $\rho$ is large enough we are sure that each bank can at least pay its interest rates to other banks. On the other hand this may be too restrictive since it will constrain banks to over-sell their portfolio unnecessarily.
+
+\paragraph{Reserve rule}
+We want to ensure that banks can pay their interest rates the next day. We thus introduce the following regulatory rule imposed by some prudential authority.
+
+\begin{equation}\label{eq:rsvrule}
+R_t^i + r(L_t^i - D_t^i) \geq 0
+\end{equation}
+
+%\othernote{Renvoie à un autre problème qu'il faut préciser en amont, dans ce modèle, nous ne considérons qu'une seul type de défaut qui est le défaut fondamental (equity negative, ou vision comptable). L'autre type de défaut est le défaut de liquidité nous ne le considérons pas ici par construction. TERME ECONOMIQUE APPROPRIE : Notion de crise de solvabilité versus crise de liquidité (insolvency and illiquidity}.
+
+\paragraph{Proposition} A bank that has not defaulted in $t$ necessarily has enough liquidity in $t$ to comply with the reserve rule.
+
+\paragraph{}
+To prove this, let us distinguish between two case.
+\begin{itemize}
+    \item $\widehat D^i_t \leq \widehat L^i_t$. In that case, a bank only receives interest rates and thus automatically complies with the reserve rule. In other words, since $R_t^i \geq 0$
+    $$ \widehat L_t^i - \widehat D_t^i \geq 0 \Rightarrow r(\widehat L_t^i - \widehat D_t^i) \geq 0 \Rightarrow \widehat R_t^i + r(\widehat L_t^i - \widehat D_t^i) \geq 0.$$
+    \item $\widehat D^i_t > \widehat L^i_t$. The bank has not defaulted in $t$, thus:
+    $$\widehat E^i_t > \bar{E}^i \Rightarrow \widehat E^i_t > 0 \Leftrightarrow \widehat{R}^i_t + \widehat{P}^i_t + \widehat L^i_t - \widehat D^i_t > 0.$$
+    We have :
+    $$\widehat D^i_t - \widehat L^i_t > \widehat{R}^i_t + \widehat{P}^i_t.$$
+    Since $ r < 1$ :
+    $$ \widehat{D}^i_t - \widehat L^i_t > r(\widehat D^i_t - L^i_t).$$
+    As a consequence : 
+    $$ \widehat{R}^i_t + \widehat{P}^i_t > r(\wh D^i_t - \wh L^i_t).$$
+\end{itemize}
+
+We can thus conclude that a bank that has not defaulted in $t$ always has enough liquidity to be able to reallocate its liquid assets in $t$ so as to comply with the reserve rule.
+
+Thus, this rule enables us to avoid liquidity defaults, and being solvent is a sufficient condition to be able to comply with it. This is coherent with the fact that we want to model only fundamental default. Default can be defined as either having not enough cash to honor one's financial obligation (liquidity default) or not having enough equity (solvency default)---or both. We have shown here that since the only illiquid assets are inter-bank loans, if equity is positive in $t$ then by construction liquidity default cannot happen in $t$. 
+
+%\othernote{IMPORTANT : On pourrait définir le défaut comme soit plus assez de capital soit plus assez d'equity. Mais vu qu'il n'y a pas d'actif non liquide autre que inter bancaire, si l'equity est positive, par construction du modèle, nous savons que nous allons pouvoir payer au temps suivant. En d'autres termes nous n'observons que des "Fundamental insolvency"}
+
+
+\paragraph{Portfolio management condition}
+Since the value of the assets in the portfolio will vary, so will the size of the portfolio in relation to the rest of the balance-sheet quantities. As a basic rule of management, we may state that each bank wants to maximize its investment in the portfolio under the constraint that it amounts to a given fraction of the total of its assets $\mathcal{A}_t$ and that it respects the reserve rule. Let us define then by $\alpha^i$ the target investment percentage of bank $j$ which we can interpret as a behavioral parameter. We assume for now that the share of wealth invested in each asset remains constant. As a consequence, we  can formulate the problem in term of $P_t$ only :
+
+$$\max_{\substack{P_t^i \leq \alpha^i \mathcal{A}_t^i \\ R_t^i + r(L_t^i - D_t^i) \geq 0 \\ P_t^i + R_t^i = \widehat{P}_t^i + \widehat{R}_t^i}} P_t^i$$
+
+
+\subsection{Stage 1 : updates}\label{updates}
+
+\subsubsection{Reserves}
+
+The evolution of reserves are as follows : 
+
+\begin{equation}\label{eq:rsv}
+\widehat{R}_t^i = R_{t-1}^i + rL_t^i - rD_t^i
+\end{equation}
+
+%\paragraph{}
+%If we denote by $\mathbf{1}_{n, 1} \in \mathcal{M}_{n, 1}(\mathbb{R})$ the vector which components are ones, the previous dynamic relation can be written in matrix form : 
+
+%\begin{equation} \label{eq:rsvmat}
+%R_{t+1} = R_t + r(L_{t} \mathbf{1}_{n, 1}-L_{t}^T \mathbf{1}_{n, 1})
+%\end{equation}
+
+\subsubsection{Portfolio}
+
+\paragraph{}
+Using the returns, the dynamic of the portfolio is given by :
+
+\begin{eqnarray*}
+\widehat{P}_t^{i} = \sum_{l=1}^{m} Q_{t-1}^{il} X_{t-1}^l (1+\omega_t^l) \\
+\widehat{P}_t^{i} = P_{t-1}^{i} + \sum_{l=1}^{m} Q_{t-1}^{il} X_{t-1}^l \omega_t^l
+\end{eqnarray*}
+     
+Although it is simpler to define $\Delta X_t = X_t - X_{t-1}t$ and write the previous dynamic relation using dot products: 
+
+\begin{equation}\label{eq:ptf}
+\widehat{P}_t^{i} = P_{t-1}^{i} + Q_{t-1}^i\Delta X_t
+\end{equation}
+
+
+\subsubsection{Equity}
+
+\paragraph{}
+In math form, the accounting definition of equity is : 
+
+\begin{equation}\label{eq:eqtdef}
+E^i_t = \widehat{R}^i_t + L^i_t + \widehat{P}_t^i - D^i_t
+\end{equation}
+
+Putting all above dynamic equation together yields: 
+
+$$ E^i_t = R_{t-1}^i + L^i_t - D^i_t + P_{t-1}^i + rL_t^i - rD_t^i + Q_{t-1}^i\Delta X_t$$
+
+If no bank has defaulted in $t-1$, we have that $L^i_t = L^i_{t-1}$ and $D^i_t = D^i_{t-1}$, and thus we have :
+
+$$E^i_t = R_{t-1}^i + L^i_{t-1} + P_{t-1}^{i} - D^i_{t-1} + rL_t^i- rD_t^i + Q_{t-1}^i\Delta X_t$$
+
+We can thus deduce the following recursion formula for equity in the case where no bank has defaulted in the previous period : 
+
+\begin{equation}\label{eq:eqtdyna}
+\Leftrightarrow E^i_t = E^i_{t-1} + rL_{t-1}^i - rD_{t-1}^i + Q_{t-1}^i\Delta X_t
+\end{equation}
+
+\subsection{Stage 3 : balance sheet management}\label{balance_sheet_management}
+
+\subsubsection{Reserve rule and portoflio rule in practice}
+
+Let us distinguish two cases
+
+\begin{itemize}
+    \item $\widehat{R}_t^i < r(D_t^i - L_t^i)$ (reserve rule not matched)
+    \item $\widehat{R}_t^i \geq r(D_t^i - L_t^i)$ (reserve rule matched)
+\end{itemize}
+
+Let us also define the portfolio valuation objective $P_t^{j}$ which corresponds to the valuation of the portfolio the bank wish to reach.
+
+\paragraph{Reserve rule matched}
+No need to rebalance to comply with the reserve rule, although if the objective valuation of the portfolio is to be increased, we must keep in mind that the new portfolio objective must also comply with the reserve rule.
+We distinguish again different cases : 
+\begin{itemize}
+    \item $\widehat{P}_t^i > \alpha^i \mathcal{A}_t^i$. In that case, a portion $\widehat{P}_t^i - \alpha^i \mathcal{A}_t^i$ of the portfolio must be sold. No other actions are required, thus $$P_t^i = \alpha^i \mathcal{A}_t^i$$
+    \item $\widehat{P}_t^i \leq \alpha^i \mathcal{A}_t^i$. In that case the bank wants to increase its portfolio to saturate the constraint if possible given the reserve rule. Thus $$P_t^{i} = \min \left(\alpha^i \mathcal{A}_t^i,~~\widehat{P}_t^i + \widehat{R}_t^i - r(D_t^i - L_t^i) \right)$$
+\end{itemize}
+
+\paragraph{Reserve rule not matched}
+The bank have to sell a portion of its portfolio to comply with the reserve rule. However, it may sell more if its portfolio is still too large according to the financial choice. Let us distinguish two cases :
+\begin{itemize}
+    \item $\widehat{P}_t^i + \widehat{R}_t^i - r(D_t^i - L_t^i) \leq \alpha^i \mathcal{A}_t^i$. In that case, the bank sells only the amount necessary to comply with the reserve rule --- since $\widehat{R}_t^i - r(D_t^i - L_t^i) < 0$ this is indeed selling . As a consequence : 
+    $$ P_t^{i} = \widehat{P}_t^i + \widehat{R}_t^i - r(D_t^i - L_t^i)$$
+    \item $\widehat{P}_t^i + \widehat{R}_t^i - r(D_t^i - L_t^i) > \alpha^i \mathcal{A}_t^i$. In that case, the bank sells enough to comply with the financial choice which is necessarily enough to comply also with the reserve rule. As a consequence : 
+    $$ P_t^i = \alpha^i \mathcal{A}_t^i$$
+    
+\end{itemize}
+
+\paragraph{Synthesis}
+We can actually unify all four cases in the following formula : 
+
+\begin{equation}\label{rebal_synthesis}
+P_t^i = \min(\widehat{P}_t^i + \widehat{R}_t^i - r(D_t^i - L_t^i),~~\alpha^i \mathcal{A}_t^i)
+\end{equation}
+
+The new amount of reserves is also deduced easily from $P_t^i$: 
+\begin{equation}\label{eq:rebal_reserves}
+R_t^i = \widehat{R}_t^i + \widehat{P}_t^i - P_t^i
+\end{equation}
+
+\subsubsection{Find quantities to match a given portfolio valuation objective}
+
+\paragraph{}
+Now that we have found $P_t^{j}$, we show here how to adjust the quantities invested in each asset to match this portfolio valuation objective. Given prices $X_t$ and quantities $Q_{t-1}^j$, we seek to find the vector of quantities $Q_t^{j}$ for which $Q_t^{j}X_{t-1} = P_t^{j}$ while keeping the relative quantities constant. We show how to do this in the appendices \ref{matching_quantities} yielding the following result : 
+
+\begin{equation}\label{quantities_bij}
+\forall l,~~ Q_t^{il} = Q_{t-1}^{il}\left(1 + \frac{P_t^i - \widehat{P}_t^i}{\widehat{P}_t^i} \right)
+\end{equation}
+
+
+
+Injecting (\ref{rebal_synthesis}) into (\ref{quantities_bij}), we deduce the new quantities :
+\begin{equation}\label{eq:rebal_quantities}
+\forall l,~~ Q_t^{il} = Q_{t-1}^{il}\left(1 + \frac{\min(\widehat{P}_t^i + \widehat{R}_t^i - r(D_t^i - L_t^i),~~\alpha^i \mathcal{A}_t^i) - \widehat{P}_t^i}{\widehat{P}_t^i} \right)
+\end{equation}
+
+
+\section{Taking into account bankruptcy}\label{dynamic with bankruptcy}
+
+\subsection{Hypothesis and definitions}
+
+\paragraph{Set of defaulting banks}
+A time $t$, if the capital of a non-empty set of banks to drop below a given threshold, those banks declare bankruptcy at time $t$. Let $\mathcal{D}_t$ be the set of banks that declare bankruptcy at time $t$. Thus : $$j \in \mathcal{D}_{t} \Leftrightarrow \{ \widehat{E}_{t}^i \leq \bar{E}^i \} \cap \{ E_{t-1}^i \geq \bar{E}^i \} $$
+
+\paragraph{}    
+We also define the set of banks that have defaulted up to time $t+1$ :
+$$\mathcal{D}_{0:t} = \bigcup_{s=0}^{t} \mathcal{D}_s $$
+
+\paragraph{}
+Symmetrically, we use the notation $\overline{\mathcal{D}_{t}}$ the complementary in the set of banks of $\mathcal{D}_{t}$. We use the same notation for the complementary of $\mathcal{D}_{0:t}$ which we shall then denote by $\overline{\mathcal{D}_{0:t}}$.
+
+
+\paragraph{Proceedings from liquidation and claim coefficient}
+Let us firstly introduce two quantities that we will use across this section. 
+
+\begin{itemize}
+
+\item We define the proceedings from liquidation $\pi_t^j$ . This is the cash liquidation value of $j$'s balance sheet after it declares default and is liquidated at time $t$
+\item We define the claim coefficient of creditor $i$ on bank $j$ by :
+$$\Psi_t^{ij} = \frac{L_t^{ij}}{\sum_{i'=1}^n L_t^{i'j}} $$
+
+\end{itemize}
+
+\paragraph{}
+In this section, we will present two possible procedures to determine $\pi_t^j$ : internal settlement in section \ref{internal settlement} and intervention of a third party in section \ref{third party}. Although we firstly present some considerations of the price impact of fire sales.
+
+\paragraph{Impact of fire sale on risky assets' valuation}
+When a portfolio is sold in a fire sale context, an important volume is sold and the selling is done in the urgency. It is as a consequence interesting --- realistic --- to add a fire sale impact to the valuation of the risky assets sold. There are two dimensions to this impact :
+\begin{itemize}
+    \item When a bank is liquidated, it implies that the liquidation value of a portfolio is less than its face value. We model this using the fire sale constant $\xi$ that is introduced in the next section.
+    \item The liquidation of an important volume of a given asset is also bound to have a long term price impact. Such long term impact would be an interesting add-in to our model since for now the price impact is local --- affects only the portfolio liquidation of one bank at a time --- and memory-less --- does not have long term impact on the prices.
+\end{itemize}
+
+\subsection{Internal settlement}\label{internal settlement}
+
+\paragraph{}
+In the internal settlement case, liquidation follows the procedure :
+\othernote{Faire un paragraphe d'introduction avec du texte sans les équations pour mieux comprendre : on vend tous les actifs liquides et on transfère les prêts des banques en défaut sont distribuées proportionnellement à ses créditeurs}
+ \begin{enumerate}
+ 
+    \item In $t-1$ at stage 2 :
+    \begin{itemize}
+        \item if $\widehat{E}_{t-1}^j \leq \bar{E}^j$, $j$ declares default. Which triggers the following liquidation steps.
+        \item $\pi_{t-1}^j$ is computed. Portfolio is sold according to its valuation with a discount coefficient $0 < \xi < 1$ applied due to fire-sale. Reserves are included. $$\pi_{t-1}^j = \xi \widehat{P}_{t-1}^j + \widehat{R}_{t-1}^j$$
+    \end{itemize}
+    \item In $t$ at stage 1, the default becomes public information which brings about the following modifications : 
+    \begin{itemize}
+        \item $j$'s loans are added to the loans of the creditors of $j$ proportionally to $\Psi_{t-1}^{ij}$ :
+        $$\forall i \notin \mathcal{D}_{0:t-1},~~\forall k \notin \mathcal{D}_{0:t-1},  ~~L_t^{ik} = L_{t-1}^{ik} + \Psi_{t-1}^{ij} L_{t-1}^{jk}$$
+        \item The loans matrix is modified to account for $j$'s default:
+        \begin{eqnarray*}
+        \forall i,~~L_t^{ij} = 0 \\
+        \forall k,~~L_t^{jk} = 0
+        \end{eqnarray*}
+        The aggregated loans and debts are then computed according to their definition:
+        \begin{eqnarray*}
+        \forall i,~~L_t^i = \sum_{s=1}^nL_t^{is} \\
+        \forall i,~~D_t^i = \sum_{s=1}^nL_t^{si}
+        \end{eqnarray*}
+        \item $j$'s balance sheet quantities are set to zero :
+        $$(E_t^j, D_t^j, R_t^j, P_t^j, L_t^j, Q_t^j) = (0, 0, 0, 0, 0, 0_{\mathbb{R}^m}) $$
+        \item Proceedings of liquidation are distributed to the creditors of $j$ proportionally to their claim on $j$. This implies a modified version of the equation (\ref{eq:rsv}): 
+        $$ \widehat{R}_t^i = R_{t-1}^i + r (L_t^i - D_t^i) + \Psi_{t-1}^{ij} \pi_{t-1}^j$$
+        Let us highlight that since the graph is rewired the amount of interests paid on loans by each non defaulting bank is not affected by the defaults of other banks.
+
+    \end{itemize}
+
+ \end{enumerate}
+ 
+ 
+\subsection{Introduction of a third party}\label{third party}
+
+\paragraph{Introduction of the liquidator}
+Another option is to introduce a special actor in the system which we call the liquidator. It only intervenes when a bank is liquidated and cannot go bankrupt (it has infinite reserves). Although for reason that will become clear, the liquidator must be integrated to the graph. We shall as a consequence give it a special index : $0$.
+
+The balance sheet of the liquidator has a special format : 
+
+\begin{center}
+\begin{tabular}{|c|c|}
+  \hline
+  Assets $(\mathcal{A}_t^0)$ & Liabilities $(\mathcal{L}_t^0)$\\
+  \hline
+  Reserves ($R_t^0 = $ \guillemotleft $\infty$\guillemotright) & Equity $(E_t^0)$ \\
+  Inter-bank loans $(L_t^0)$ & (Debts $(D_t^0 = 0)$)\\
+  (Portfolio $(P_t^0 = 0)$)  &    \\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph{Liquidation with the liquidator}
+When a bank $j$ goes bankrupt at time $t-1$, the liquidator buys the totality of the bankrupt bank's loans to other banks with a discount $0<\zeta<1$. For the rest the procedure is similar to the previous one :
+
+
+ \begin{enumerate}
+ 
+    \item In $t-1$ at stage 2 :
+    \begin{itemize}
+        \item if $\widehat{E}_{t-1}^j \leq \bar{E}^j$, $j$ declares default. Which triggers the following liquidation steps.
+        \item $\pi_{t-1}^j$ is computed. Portfolio is sold according to its valuation with a discount coefficient $0 < \xi < 1$ applied due to fire-sale. Reserves are included. Finally cash from the loans sold to the liquidator are incorporated 
+        $$\pi_{t-1}^j = \xi \widehat{P}_{t-1}^j + \widehat{R}_{t-1}^j + \zeta L^j_{t-1} $$ 
+    \end{itemize}
+    \item In $t$ at stage 1, the default becomes public information which brings about the following modifications : 
+    \begin{itemize}
+    
+        \item The liquidator's balance sheets is updated to incorporate the loans buy-outs (bank $j$'s debtor now owns money to the liquidator) :
+        \begin{eqnarray*}
+        R_t^0 &=& R_{t-1}^0 - \zeta L^j_{t-1}\\
+        L_t^0 &=& L_{t-1}^0 + L^j_{t-1}\\
+        E_t^0 &=& E_{t-1}^0 + (1 -\zeta)L^j_{t-1}\\
+        \forall k\neq 0,~~L_t^{0k} &=& L_{t-1}^{0k} + L_{t-1}^{jk}\\
+        \end{eqnarray*}
+    
+        \item The loans matrix is modified :
+        \begin{eqnarray*}
+        \forall i,~~L_t^{ij} = 0 \\
+        \forall k,~~L_t^{jk} = 0
+        \end{eqnarray*}
+        The aggregated loans and debts are then computed according to their definition:
+        \begin{eqnarray*}
+        \forall i,~~L_t^i = \sum_{s=1}^nL_t^{is} \\
+        \forall i,~~D_t^i = \sum_{s=1}^nL_t^{si}
+        \end{eqnarray*}
+        
+        \item $j$'s balance sheet quantities are set to zero :
+        $$(E_t^j, D_t^j, R_t^j, P_t^j, L_t^j, Q_t^j) = (0, 0, 0, 0, 0, 0_{\mathbb{R}^m}) $$
+        
+        \item Proceedings of liquidation are distributed to the creditors of $j$ proportionally to their claim on $j$. This implies a modified version of the equation (\ref{eq:rsv}): 
+        $$ \widehat{R}_t^i = R_{t-1}^i + r L_t^i - rD_t^i + \Psi_{t-1}^{ij} \pi_{t-1}^j$$
+        Let us highlight that since the graph is rewired the amount of interests paid on loans by each non defaulting bank is not affected by the defaults of other banks.
+
+    \end{itemize}
+
+ \end{enumerate}
+ 
+
+\section{Synthesis of the model}
+\othernote{Ecrire les équations avec des fonctions indicatrices lorsque l'on a besoin de disjoindre des cas selon que les banques ont fait défaut ou non. Somme sur j dans les banques ayant fait défaut.}
+
+\othernote{Faire deux synthèses, une pour le liquidateur, une pour internal settlement}
+
+\othernote{Passer en annexe, on répète ce qui a été dit sans rajouter quoique ce soit, c'est plus pour nous et pour le codage qu'autre chose}
+
+\othernote{Commencer à mettre des quantificateurs pour décrire ce qui se passe pour tout le réseau}
+
+\othernote{Update equity : développer la formule pour montrer les trois types de sources potentielles de pertes : taux d'intérêt, portfolio, défaut}
+
+In this section we summarize the fundamental equations of the model. 
+
+\subsection{Preliminaries}
+
+\begin{itemize}
+    \item Definition of the returns:
+    $$\omega_t^l = \frac{X_t^l - X_{t-1}^l}{X_{t-1}^l}$$
+    \item No expected losers initial condition
+    $$rL_0^i + \sum_{l=1}^{m} Q_0^{il} X_0^l\mu_l \geq rD_0^i$$
+\end{itemize}
+
+
+\subsection{Stage 1 of period $t$}
+
+$j$ is the generic index for a bank that has defaulted in period $t-1$
+\begin{itemize}
+
+    \item Update balance sheet of the liquidator  
+    \begin{eqnarray*}
+    R_t^0 &=& R_{t-1}^0 - \zeta L^j_{t-1}\\
+    L_t^0 &=& L_{t-1}^0 + L^j_{t-1}\\
+    E_t^0 &=& E_{t-1}^0 + (1 -\zeta)L^j_{t-1}\\
+    \forall k \neq 0,~~L_t^{0k} &=& L_{t-1}^{0k} + L_{t-1}^{jk}\\
+    \end{eqnarray*}
+    
+    \item The loans matrix is modified :
+    \begin{eqnarray*}
+    \forall i,~~L_t^{ij} = 0 \\
+    \forall k,~~L_t^{jk} = 0
+    \end{eqnarray*}
+    The aggregated loans and debts are then computed according to their definition:
+    \begin{eqnarray*}
+    \forall i,~~L_t^i = \sum_{s=1}^nL_t^{is} \\
+    \forall i,~~D_t^i = \sum_{s=1}^nL_t^{si}
+    \end{eqnarray*}
+    
+    \item Zero out the defaulting bank's balance sheet
+    $$(E_t^j, D_t^j, R_t^j, P_t^j, L_t^j, Q_t^j) = (0, 0, 0, 0, 0, 0_{\mathbb{R}^m}) $$
+    
+    \item Update reserves
+    $$ \widehat{R}_t^i = R_{t-1}^i + rL_t^i - rD_t^i + \Psi_{t-1}^{ij} \pi_{t-1}^j$$
+    
+    \item Update portfolios
+    $$\widehat{P}_t^i = P_{t-1}^i + Q_{t-1}^i\Delta X_t$$
+    
+    \item Update equities
+    $$E^i_t = \widehat{R}^i_t + L^i_t + \widehat{P}_t^i - D^i_t$$
+\end{itemize}
+
+
+\subsection{Stage 2 of period $t$}
+\begin{itemize}
+    \item Check if no new bank $j$  has defaulted :
+    $$\widehat{E}_t^j \leq \bar{E}^j $$
+    \begin{itemize}
+        \item If that is the case carry on
+        \item Else, $\pi_t^j = 0$ and $\Psi_t^{ij}=0$ and jump to stage 3
+    \end{itemize}
+    
+    \item Computation of the proceedings of liquidition
+    $$\pi_t^j = \xi \widehat{P}_t^j + \widehat{R}_t^j + \zeta L^j_t $$ 
+        
+    \item Compute the claim coefficients
+    $$\Psi_t^{ij} = \frac{L_t^{ij}}{\sum_{i'=1}^n L_t^{i'j}} $$
+\end{itemize}
+
+
+\subsection{Stage 3 of period $t$}
+
+\begin{itemize}
+
+\item Portfolio management : set the definitive portfolio valuation for $t+1$
+$$P_t^{j} = \min(\widehat{P}_t^j + \widehat{R}_t^j - r(D_t^j - L_t^j),~~\alpha^j \mathcal{A}_t^j)$$
+
+\item Update the quantities consequently
+$$\forall l,~~ Q_t^{jl} = Q_{t-1}^{jl}\left(1 + \frac{\min(\widehat{P}_t^j + \widehat{R}_t^j - r(D_t^j - L_t^j),~~\alpha^j \mathcal{A}_t^j) - \widehat{P}_t^j}{\widehat{P}_t^j} \right)$$
+
+\item Set the definitive reserves for $t+1$ accordingly
+$$R_t^j = \widehat{R}_t^j + \widehat{P}_t^j - P_t^{j}$$
+\end{itemize}
+
+
+
+\begin{appendices}
+
+\section{Find quantities to match a given portfolio valuation}\label{matching_quantities}
+\paragraph{}
+We show here how to adjust the quantities invested in each asset to match a portfolio valuation objective. This will be useful in the other rebalancing stages.
+
+\paragraph{}
+Given a portfolio value objective $P_t^{i}$, a portfolio current valuation $\widehat {P}_t^{i}$, prices $X_{t-1}$ and quantities $Q_{t-1}^i$, we seek to find the vector of quantities $Q_t^{i}$ for which $Q_t^{i}X_{t-1} = P_t^{i}$ while keeping the relative quantities constant i.e : 
+$$\forall l \in \llbracket 1, m \rrbracket,~~ \frac{Q_t^{il}}{\sum_{c=1}^m Q_t^{ic}} = \frac{Q_{t-1}^{il}}{\sum_{c=1}^m Q_{t-1}^{ic}}$$
+
+Let us define : $$\Bar{Q_{t-1}^i} = \sum_{c=1}^m Q_{t-1}^{ic}$$
+$$\delta^{il} = \frac{Q_{t-1}^{il}}{\Bar{Q_{t-1}^i}}$$
+
+
+It is easy to verify that given the constraints, we only have one degree of freedom to modify the quantities and thus finding $Q_t^{i}$ boils down to finding $\eta^i$ such that : 
+
+$$\sum_{l=1}^m (Q_{t-1}^{il} + \delta^{il}\eta^i)X_t^l = P_t^{i}$$
+
+The resulting solution quantities being :
+
+$$\forall l,~~ Q_t^{il} =  (Q_{t-1}^{il} + \delta^{il}\eta^i) $$
+
+Developing and solving in $\eta^i$ yields : 
+$$ \eta^i = \Bar{Q_{t-1}^i} \frac{P_t^{i} - \widehat{P}_t^i}{\widehat{P}_t^i}$$
+
+Thus : 
+
+\begin{equation*}
+\forall l,~~ Q_t^{il} = Q_{t-1}^{il}\left(1 + \frac{P_t^{i} - \widehat{P}_t^i}{\widehat{P}_t^i} \right)
+\end{equation*}
+
+
+\end{appendices}
+
+
+\printbibliography
+
+\end{document}
