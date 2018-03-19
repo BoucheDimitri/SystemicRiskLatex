@@ -184,7 +184,7 @@ At the end of this stage, the state of a bank is given by a vector of five varia
 $(\widehat{E}^i_t, \widehat{D}^i_t, \widehat{R}^i_t, \widehat{P}^i_t, \widehat{L}^i_t)$.
 
 \item \textbf{Stage 2 : checking for default}. Banks for which $\wh E_t^i \leq \bar{E}^i$ declare
-default and are liquidated (see section \ref{dynamic with bankruptcy} for the detailed processes of liquidation). Although their defaulting is not public information yet, it will become so at the beginning of the next period. The vector $\bar{E}$ which components are the $\bar{E}^i$ is a minimal threshold value for the equity of each bank. It enables us to implicitly include deposits from investors or individuals from outside the system in the balance sheets of banks.
+default and are liquidated (see section \ref{dynamic with bankruptcy} for the detailed processes of liquidation). Although their defaulting is not public information yet, it will become so at the beginning of the next period. The vector $\bar{E}$ which components are the $\bar{E}^i$ is a minimal threshold value for the equity of each bank. It enables us to implicitly include deposits from investors or individuals from outside the system in the balance sheets of the banks.
 
 \item \textbf{Stage 3 : balance sheet management} (detailed in \ref{balance_sheet_management})
 Banks readjust between portfolio and reserves according to (detailed in \ref{ConstraintsInitialConditions}):
@@ -245,7 +245,7 @@ As a consequence,
 
 $$ \mathbb{E}[E_t ^i|\mathcal{F}_{t-1}] \geq E_{t-1}^i \Leftrightarrow L_{t-1}^i - rD_{t-1}^i + \sum_{l=1}^{m} Q_{t-1}^{il} X^l_{t-1}\mu_l \geq 0.$$
 
-Reaaranging the terms, the condition condition is:
+Rearanging the terms, the condition condition is:
 
 $$rL_{t-1}^i + \sum_{l=1}^{m} Q_{t-1}^{il} X^l_{t-1}\mu_l \geq rD_{t-1}^i.$$
 
@@ -357,14 +357,14 @@ Putting all above dynamic equation together yields:
 
 $$ \wh E^i_t = R_{t-1}^i + r \wh L_t^i - r \wh D_t^i + \wh L^i_t - \wh D^i_t + P_{t-1}^i + Q_{t-1}^i\Delta X_t$$
 
-If no bank has defaulted in $t-1$, we have that $\wh L^i_t = L^i_{t-1}$ and $ \wh D^i_t = D^i_{t-1}$, and thus we have:
+If no bank has defaulted in $t-1$, we have that $\wh L^i_t = L^i_{t-1}$ and $ \wh D^i_t = D^i_{t-1}$, and thus:
 
-$$E^i_t = R_{t-1}^i + L^i_{t-1} + P_{t-1}^{i} - D^i_{t-1} + rL_t^i- rD_t^i + Q_{t-1}^i\Delta X_t$$
+$$E^i_t = R_{t-1}^i + P_{t-1}^{i} + L^i_{t-1} - D^i_{t-1} + r (L_{t-1}^i - D_{t-1}^i) + Q_{t-1}^i\Delta X_t$$
 
 We can thus deduce the following recursion formula for equity in the case where no bank has defaulted in the previous period: 
 
 \begin{equation}\label{eq:eqtdyna}
-\Leftrightarrow E^i_t = E^i_{t-1} + rL_{t-1}^i - rD_{t-1}^i + Q_{t-1}^i\Delta X_t
+\Leftrightarrow E^i_t = E^i_{t-1} + r (\wh L_{t-1}^i - \wh D_{t-1}^i) + Q_{t-1}^i\Delta X_t
 \end{equation}
 
 \subsection{Stage 3 : balance sheet management}\label{balance_sheet_management}
@@ -374,8 +374,8 @@ We can thus deduce the following recursion formula for equity in the case where 
 Let us distinguish two cases
 
 \begin{itemize}
-    \item $\widehat{R}_t^i < r(D_t^i - L_t^i)$ (reserve rule not matched)
-    \item $\widehat{R}_t^i \geq r(D_t^i - L_t^i)$ (reserve rule matched)
+    \item $\widehat{R}_t^i < r(\wh D_t^i - \wh L_t^i)$ (reserve rule not matched)
+    \item $\widehat{R}_t^i \geq r(\wh D_t^i - \wh L_t^i)$ (reserve rule matched)
 \end{itemize}
 
 Let us also define the portfolio valuation objective $P_t^{j}$ which corresponds to the valuation of the portfolio the bank wish to reach.
@@ -386,15 +386,15 @@ We distinguish again different cases :
 \begin{itemize}
     \item $\widehat{P}_t^i > \alpha^i \mathcal{A}_t^i$. In that case, a portion $\widehat{P}_t^i - \alpha^i \mathcal{A}_t^i$ of the portfolio must be sold. No other actions are required, thus:
      $$P_t^i = \alpha^i \mathcal{A}_t^i.$$
-    \item $\widehat{P}_t^i \leq \alpha^i \mathcal{A}_t^i$. In that case the bank wants to increase its portfolio to saturate the constraint if possible given the reserve rule. Thus: $$P_t^{i} = \min \left(\alpha^i \mathcal{A}_t^i,~~\widehat{P}_t^i + \widehat{R}_t^i - r(D_t^i - L_t^i) \right).$$
+    \item $\widehat{P}_t^i \leq \alpha^i \mathcal{A}_t^i$. In that case the bank wants to increase its portfolio to saturate the constraint if possible given the reserve rule. Thus: $$P_t^{i} = \min \left(\alpha^i \mathcal{A}_t^i,~~\widehat{P}_t^i + \widehat{R}_t^i - r(\wh D_t^i - \wh L_t^i) \right).$$
 \end{itemize}
 
 \paragraph{Reserve rule not matched}
 The bank have to sell a portion of its portfolio to comply with the reserve rule. However, it may sell more if its portfolio is still too large according to the financial choice. Let us distinguish two cases :
 \begin{itemize}
-    \item $\widehat{P}_t^i + \widehat{R}_t^i - r(D_t^i - L_t^i) \leq \alpha^i \mathcal{A}_t^i$. In that case, the bank sells only the amount necessary to comply with the reserve rule --- since $\widehat{R}_t^i - r(D_t^i - L_t^i) < 0$ this is indeed selling . As a consequence: 
-    $$ P_t^{i} = \widehat{P}_t^i + \widehat{R}_t^i - r(D_t^i - L_t^i).$$
-    \item $\widehat{P}_t^i + \widehat{R}_t^i - r(D_t^i - L_t^i) > \alpha^i \mathcal{A}_t^i$. In that case, the bank sells enough portfolio assets to comply with the financial choice. Which is enough to comply also with the reserve rule since we have: $\widehat{P}_t^i - \alpha^i \mathcal{A}_t^i > - \widehat{R}_t^i + r(D_t^i - L_t^i) $. As a consequence: 
+    \item $\widehat{P}_t^i + \widehat{R}_t^i - r(\wh D_t^i - \wh L_t^i) \leq \alpha^i \mathcal{A}_t^i$. In that case, the bank sells only the amount necessary to comply with the reserve rule --- since $\widehat{R}_t^i - r(\wh D_t^i - \wh L_t^i) < 0$ this is indeed selling . As a consequence: 
+    $$ P_t^{i} = \widehat{P}_t^i + \widehat{R}_t^i - r(\wh D_t^i - \wh L_t^i).$$
+    \item $\widehat{P}_t^i + \widehat{R}_t^i - r(\wh D_t^i - \wh L_t^i) > \alpha^i \mathcal{A}_t^i$. In that case, the bank sells enough portfolio assets to comply with the financial choice. Which is enough to comply also with the reserve rule since we have: $\widehat{P}_t^i - \alpha^i \mathcal{A}_t^i > - \widehat{R}_t^i + r(\wh D_t^i - \wh L_t^i) $. As a consequence: 
     $$ P_t^i = \alpha^i \mathcal{A}_t^i.$$
     
 \end{itemize}
@@ -403,7 +403,7 @@ The bank have to sell a portion of its portfolio to comply with the reserve rule
 We can actually unify all four cases in the following formula : 
 
 \begin{equation}\label{rebal_synthesis}
-P_t^i = \min(\widehat{P}_t^i + \widehat{R}_t^i - r(D_t^i - L_t^i),~~\alpha^i \mathcal{A}_t^i).
+P_t^i = \min(\widehat{P}_t^i + \widehat{R}_t^i - r(\wh D_t^i - \wh L_t^i),~~\alpha^i \mathcal{A}_t^i).
 \end{equation}
 
 The new amount of reserves is also deduced easily from $P_t^i$: 
@@ -424,7 +424,7 @@ Now that $P_t^{j}$ is optimized, we show here how to adjust the quantities inves
 
 Using (\ref{rebal_synthesis}) into (\ref{quantities_bij}), we deduce the new quantities:
 \begin{equation}\label{eq:rebal_quantities}
-\forall l,~~ Q_t^{il} = Q_{t-1}^{il}\left(1 + \frac{\min(\widehat{P}_t^i + \widehat{R}_t^i - r(D_t^i - L_t^i),~~\alpha^i \mathcal{A}_t^i) - \widehat{P}_t^i}{\widehat{P}_t^i} \right).
+\forall l,~~ Q_t^{il} = Q_{t-1}^{il}\left(1 + \frac{\min(\widehat{P}_t^i + \widehat{R}_t^i - r(\wh D_t^i - \wh L_t^i),~~\alpha^i \mathcal{A}_t^i) - \widehat{P}_t^i}{\widehat{P}_t^i} \right).
 \end{equation}
 
 
@@ -450,7 +450,7 @@ Let us firstly introduce two quantities that we will use across this section.
 
 \item We define the proceedings from liquidation $\pi_t^j$ . This is the cash liquidation value of $j$'s balance sheet after it declares default and is liquidated at time $t$
 \item We define the claim coefficient of creditor $i$ on bank $j$ by :
-$$\Psi_t^{ij} = \frac{L_t^{ij}}{\sum_{i'=1}^n L_t^{i'j}} $$
+$$\Psi_t^{ij} = \frac{\wh L_t^{ij}}{\sum_{s=1}^n \wh L_t^{sj}} $$
 
 \end{itemize}
 
@@ -467,10 +467,10 @@ When a portfolio is sold in a fire sale context, an important volume is sold and
 \subsection{Internal settlement}\label{internal settlement}
 
 \paragraph{}
-In the internal settlement case, liquidation follows the procedure :
-\othernote{Faire un paragraphe d'introduction avec du texte sans les équations pour mieux comprendre : on vend tous les actifs liquides et on transfère les prêts des banques en défaut sont distribuées proportionnellement à ses créditeurs}
- \begin{enumerate}
- 
+In the internal settlement case, the loans of a defaulting banks $j$ are redistributed to its creditor proportionally to their claim on $j$.
+
+\begin{enumerate}
+
     \item In $t-1$ at stage 2 :
     \begin{itemize}
         \item if $\widehat{E}_{t-1}^j \leq \bar{E}^j$, $j$ declares default. Which triggers the following liquidation steps.
@@ -479,22 +479,24 @@ In the internal settlement case, liquidation follows the procedure :
     \item In $t$ at stage 1, the default becomes public information which brings about the following modifications : 
     \begin{itemize}
         \item $j$'s loans are added to the loans of the creditors of $j$ proportionally to $\Psi_{t-1}^{ij}$ :
-        $$\forall i \notin \mathcal{D}_{0:t-1},~~\forall k \notin \mathcal{D}_{0:t-1},  ~~L_t^{ik} = L_{t-1}^{ik} + \Psi_{t-1}^{ij} L_{t-1}^{jk}$$
+        $$\forall i \notin \mathcal{D}_{0:t-1},~~\forall k \notin \mathcal{D}_{0:t-1},  ~~ \wh L_t^{ik} = L_{t-1}^{ik} + \Psi_{t-1}^{ij} L_{t-1}^{jk}$$
         \item The loans matrix is modified to account for $j$'s default:
         \begin{eqnarray*}
-        \forall i,~~L_t^{ij} = 0 \\
-        \forall k,~~L_t^{jk} = 0
+        \forall i,~~ \wh L_t^{ij} = 0 \\
+        \forall k,~~ \wh L_t^{jk} = 0
         \end{eqnarray*}
         The aggregated loans and debts are then computed according to their definition:
         \begin{eqnarray*}
-        \forall i,~~L_t^i = \sum_{s=1}^nL_t^{is} \\
-        \forall i,~~D_t^i = \sum_{s=1}^nL_t^{si}
+        \forall i,~~ \wh L_t^i = \sum_{s=1}^n \wh L_t^{is} \\
+        \forall i,~~ \wh D_t^i = \sum_{s=1}^n \wh L_t^{si}
         \end{eqnarray*}
         \item $j$'s balance sheet quantities are set to zero :
         $$(E_t^j, D_t^j, R_t^j, P_t^j, L_t^j, Q_t^j) = (0, 0, 0, 0, 0, 0_{\mathbb{R}^m}) $$
         \item Proceedings of liquidation are distributed to the creditors of $j$ proportionally to their claim on $j$. This implies a modified version of the equation (\ref{eq:rsv}): 
-        $$ \widehat{R}_t^i = R_{t-1}^i + r (L_t^i - D_t^i) + \Psi_{t-1}^{ij} \pi_{t-1}^j$$
-        Let us highlight that since the graph is rewired the amount of interests paid on loans by each non defaulting bank is not affected by the defaults of other banks.
+        $$ \widehat{R}_t^i = R_{t-1}^i + r (\wh L_t^i - \wh D_t^i) + \Psi_{t-1}^{ij} \pi_{t-1}^j$$
+
+\paragraph{}
+Let us highlight that since the loans of a defaulting bank are redistributed internally to its non defaulting creditors, the amount of interests paid on loans by each non defaulting bank is not affected by the defaults of other banks. On the other hand, the amount of interests received can decrease since the loans to a defaulting banks are lost. 
 
     \end{itemize}
 
@@ -504,7 +506,7 @@ In the internal settlement case, liquidation follows the procedure :
 \subsection{Introduction of a third party}\label{third party}
 
 \paragraph{Introduction of the liquidator}
-Another option is to introduce a special actor in the system which we call the liquidator. It only intervenes when a bank is liquidated and cannot go bankrupt (it has infinite reserves). Although for reason that will become clear, the liquidator must be integrated to the graph. We shall as a consequence give it a special index : $0$.
+Another option is to introduce a special actor in the system which we call the liquidator. It only intervenes when a bank is liquidated and cannot go bankrupt (it has infinite reserves). Although for reason that will become clear, the liquidator must be integrated to the graph. We shall as a consequence give it a special index: $0$.
 
 The balance sheet of the liquidator has a special format : 
 
@@ -537,45 +539,36 @@ When a bank $j$ goes bankrupt at time $t-1$, the liquidator buys the totality of
     
         \item The liquidator's balance sheets is updated to incorporate the loans buy-outs (bank $j$'s debtor now owns money to the liquidator) :
         \begin{eqnarray*}
-        R_t^0 &=& R_{t-1}^0 - \zeta L^j_{t-1}\\
-        L_t^0 &=& L_{t-1}^0 + L^j_{t-1}\\
-        E_t^0 &=& E_{t-1}^0 + (1 -\zeta)L^j_{t-1}\\
-        \forall k\neq 0,~~L_t^{0k} &=& L_{t-1}^{0k} + L_{t-1}^{jk}\\
+        \wh R_t^0 &=& \wh R_{t-1}^0 - \zeta L^j_{t-1}\\
+        \wh L_t^0 &=& L_{t-1}^0 + L^j_{t-1}\\
+        \wh E_t^0 &=& E_{t-1}^0 + (1 -\zeta)L^j_{t-1}\\
+        \forall k\neq 0,~~\wh L_t^{0k} &=& L_{t-1}^{0k} + L_{t-1}^{jk}\\
         \end{eqnarray*}
     
         \item The loans matrix is modified :
         \begin{eqnarray*}
-        \forall i,~~L_t^{ij} = 0 \\
-        \forall k,~~L_t^{jk} = 0
+        \forall i,~~ \wh L_t^{ij} = 0 \\
+        \forall k,~~ \wh L_t^{jk} = 0
         \end{eqnarray*}
         The aggregated loans and debts are then computed according to their definition:
         \begin{eqnarray*}
-        \forall i,~~L_t^i = \sum_{s=1}^nL_t^{is} \\
-        \forall i,~~D_t^i = \sum_{s=1}^nL_t^{si}
+        \forall i,~~ \wh L_t^i = \sum_{s=1}^n \wh L_t^{is} \\
+        \forall i,~~ \wh D_t^i = \sum_{s=1}^n \wh L_t^{si}
         \end{eqnarray*}
         
         \item $j$'s balance sheet quantities are set to zero :
         $$(E_t^j, D_t^j, R_t^j, P_t^j, L_t^j, Q_t^j) = (0, 0, 0, 0, 0, 0_{\mathbb{R}^m}) $$
         
         \item Proceedings of liquidation are distributed to the creditors of $j$ proportionally to their claim on $j$. This implies a modified version of the equation (\ref{eq:rsv}): 
-        $$ \widehat{R}_t^i = R_{t-1}^i + r L_t^i - rD_t^i + \Psi_{t-1}^{ij} \pi_{t-1}^j$$
-        Let us highlight that since the graph is rewired the amount of interests paid on loans by each non defaulting bank is not affected by the defaults of other banks.
+        $$ \widehat{R}_t^i = R_{t-1}^i + r (\wh L_t^i - \wh D_t^i)+ \Psi_{t-1}^{ij} \pi_{t-1}^j$$
+
 
     \end{itemize}
 
  \end{enumerate}
  
 
-\section{Synthesis of the model}
-\othernote{Ecrire les équations avec des fonctions indicatrices lorsque l'on a besoin de disjoindre des cas selon que les banques ont fait défaut ou non. Somme sur j dans les banques ayant fait défaut.}
-
-\othernote{Faire deux synthèses, une pour le liquidateur, une pour internal settlement}
-
-\othernote{Passer en annexe, on répète ce qui a été dit sans rajouter quoique ce soit, c'est plus pour nous et pour le codage qu'autre chose}
-
-\othernote{Commencer à mettre des quantificateurs pour décrire ce qui se passe pour tout le réseau}
-
-\othernote{Update equity : développer la formule pour montrer les trois types de sources potentielles de pertes : taux d'intérêt, portfolio, défaut}
+\section{Synthesis and aggregation of the model}
 
 In this section we summarize the fundamental equations of the model. 
 
@@ -583,64 +576,61 @@ In this section we summarize the fundamental equations of the model.
 
 \begin{itemize}
     \item Definition of the returns:
-    $$\omega_t^l = \frac{X_t^l - X_{t-1}^l}{X_{t-1}^l}$$
+    $$\forall l \in \llbracket 1, m \rrbracket,~~\omega_t^l = \frac{X_t^l - X_{t-1}^l}{X_{t-1}^l}.$$
     \item No expected losers initial condition
-    $$rL_0^i + \sum_{l=1}^{m} Q_0^{il} X_0^l\mu_l \geq rD_0^i$$
+    $$\forall i \in \llbracket 0, n \rrbracket,~~rL_0^i + \sum_{l=1}^{m} Q_0^{il} X_0^l\mu_l \geq rD_0^i.$$
 \end{itemize}
 
 
 \subsection{Stage 1 of period $t$}
 
-$j$ is the generic index for a bank that has defaulted in period $t-1$
 \begin{itemize}
 
     \item Update balance sheet of the liquidator  
     \begin{eqnarray*}
-    R_t^0 &=& R_{t-1}^0 - \zeta L^j_{t-1}\\
-    L_t^0 &=& L_{t-1}^0 + L^j_{t-1}\\
-    E_t^0 &=& E_{t-1}^0 + (1 -\zeta)L^j_{t-1}\\
-    \forall k \neq 0,~~L_t^{0k} &=& L_{t-1}^{0k} + L_{t-1}^{jk}\\
+    \wh R_t^0 &=& R_{t-1}^0 - \zeta \sum_{j \in \mathcal{D}_{t-1}} L^j_{t-1}\\
+    \wh L_t^0 &=& L_{t-1}^0 + \sum_{j \in \mathcal{D}_{t-1}} L^j_{t-1}\\
+    \wh E_t^0 &=& E_{t-1}^0 + (1 -\zeta) \sum_{j \in \mathcal{D}_{t-1}} L^j_{t-1}\\
+    \forall k \neq 0,~~\forall j \in \mathcal{D}_{t-1},~~ \wh L_t^{0k} &=& L_{t-1}^{0k} + L_{t-1}^{jk}.\\
     \end{eqnarray*}
     
     \item The loans matrix is modified :
     \begin{eqnarray*}
-    \forall i,~~L_t^{ij} = 0 \\
-    \forall k,~~L_t^{jk} = 0
+    \forall i \in \llbracket 0, n \rrbracket,~~\forall j \in \mathcal{D}_{t-1},~~\forall i,~~ \wh L_t^{ij} = 0 \\
+    \forall k \in \llbracket 0, n \rrbracket,~~\forall j \in \mathcal{D}_{t-1},~~\forall k,~~ \wh L_t^{jk} = 0.
     \end{eqnarray*}
     The aggregated loans and debts are then computed according to their definition:
     \begin{eqnarray*}
-    \forall i,~~L_t^i = \sum_{s=1}^nL_t^{is} \\
-    \forall i,~~D_t^i = \sum_{s=1}^nL_t^{si}
+    \forall i \in \llbracket 0, n \rrbracket,~~ \wh L_t^i = \sum_{s=1}^n \wh L_t^{is} \\
+    \forall i \in \llbracket 0, n \rrbracket,~~ \wh D_t^i = \sum_{s=1}^n \wh L_t^{si}.
     \end{eqnarray*}
     
     \item Zero out the defaulting bank's balance sheet
-    $$(E_t^j, D_t^j, R_t^j, P_t^j, L_t^j, Q_t^j) = (0, 0, 0, 0, 0, 0_{\mathbb{R}^m}) $$
+    $$\forall j \in \mathcal{D}_{t-1},~~(E_t^j, D_t^j, R_t^j, P_t^j, L_t^j, Q_t^j) = (0, 0, 0, 0, 0, 0_{\mathbb{R}^m}).$$
     
     \item Update reserves
-    $$ \widehat{R}_t^i = R_{t-1}^i + rL_t^i - rD_t^i + \Psi_{t-1}^{ij} \pi_{t-1}^j$$
+    $$ \forall i \in \llbracket 0, n \rrbracket,~~ \widehat{R}_t^i = R_{t-1}^i + r (\wh L_t^i - \wh D_t^i) + \sum_{j \in \mathcal{D}_{t-1}} \Psi_{t-1}^{ij} \pi_{t-1}^j.$$
     
     \item Update portfolios
-    $$\widehat{P}_t^i = P_{t-1}^i + Q_{t-1}^i\Delta X_t$$
+    $$\forall i \in \llbracket 0, n \rrbracket,~~ \widehat{P}_t^i = P_{t-1}^i + Q_{t-1}^i\Delta X_t.$$
     
     \item Update equities
-    $$E^i_t = \widehat{R}^i_t + L^i_t + \widehat{P}_t^i - D^i_t$$
+    $$\forall i \in \llbracket 0, n \rrbracket,~~ \wh E^i_t = R_{t-1}^i + r (\wh L_t^i - \wh D_t^i) + \sum_{j \in \mathcal{D}_{t-1}} \Psi_{t-1}^{ij} \pi_{t-1}^j + \wh L^i_t + \wh P_t^i - \wh D^i_t.$$
+    Developing, we can show that there are three possible sources of losses of equity. Let us consider $i$ given: 
+    $$\wh E^i_t = R_{t-1}^i + r (\wh L_t^i - \wh D_t^i) + \sum_{j \in \mathcal{D}_{t-1}} \Psi_{t-1}^{ij} \pi_{t-1}^j + L_{t-1}^i + \wh L_t^i - L_{t-1}^i + \wh P_t^i - \wh D^i_t$$
+    Using the fact that $\wh D_t^i = D_{t-1}^i$, we can get the following formula: 
+    $$\wh E^i_t = E^i_{t-1} + \underbrace{r (\wh L_t^i - D_{t-1}^i)}_{\downarrow~net~loans~revenues} + \underbrace{\sum_{j \in \mathcal{D}_{t-1}} \Psi_{t-1}^{ij} \pi_{t-1}^j + \wh L_t^i - L_{t-1}^i}_{defaults} + \underbrace{Q_{t-1}^i\Delta X_t}_{portfolio}.$$
 \end{itemize}
 
 
 \subsection{Stage 2 of period $t$}
 \begin{itemize}
-    \item Check if no new bank $j$  has defaulted :
-    $$\widehat{E}_t^j \leq \bar{E}^j $$
-    \begin{itemize}
-        \item If that is the case carry on
-        \item Else, $\pi_t^j = 0$ and $\Psi_t^{ij}=0$ and jump to stage 3
-    \end{itemize}
     
-    \item Computation of the proceedings of liquidition
-    $$\pi_t^j = \xi \widehat{P}_t^j + \widehat{R}_t^j + \zeta L^j_t $$ 
+    \item Computation of the proceedings of liquidation
+    $$ \forall j \in \mathcal{D}_{t-1},~~ \pi_t^j = \xi \widehat{P}_t^j + \widehat{R}_t^j + \zeta \wh L^j_t.$$ 
         
     \item Compute the claim coefficients
-    $$\Psi_t^{ij} = \frac{L_t^{ij}}{\sum_{i'=1}^n L_t^{i'j}} $$
+    $$\forall i \in \llbracket 0, n \rrbracket,~~\forall j \in \mathcal{D}_{t-1},~~\Psi_t^{ij} = \frac{ \wh L_t^{ij}}{\sum_{s=1}^n \wh L_t^{sj}}.$$
 \end{itemize}
 
 
@@ -649,13 +639,13 @@ $j$ is the generic index for a bank that has defaulted in period $t-1$
 \begin{itemize}
 
 \item Portfolio management : set the definitive portfolio valuation for $t+1$
-$$P_t^{j} = \min(\widehat{P}_t^j + \widehat{R}_t^j - r(D_t^j - L_t^j),~~\alpha^j \mathcal{A}_t^j)$$
+$$\forall i \in \llbracket 0, n \rrbracket,~~P_t^{i} = \min(\widehat{P}_t^i + \widehat{R}_t^i - r( \wh D_t^i - \wh L_t^i),~~\alpha^i \mathcal{A}_t^i)$$
 
 \item Update the quantities consequently
-$$\forall l,~~ Q_t^{jl} = Q_{t-1}^{jl}\left(1 + \frac{\min(\widehat{P}_t^j + \widehat{R}_t^j - r(D_t^j - L_t^j),~~\alpha^j \mathcal{A}_t^j) - \widehat{P}_t^j}{\widehat{P}_t^j} \right)$$
+$$\forall i \in \llbracket 0, n \rrbracket,~~\forall l \in \llbracket 0, m \rrbracket,~~Q_t^{il} = Q_{t-1}^{il}\left(1 + \frac{\min(\widehat{P}_t^i + \widehat{R}_t^i - r( \wh D_t^i - \wh L_t^i),~~\alpha^i \mathcal{A}_t^i) - \widehat{P}_t^i}{\widehat{P}_t^i} \right)$$
 
 \item Set the definitive reserves for $t+1$ accordingly
-$$R_t^j = \widehat{R}_t^j + \widehat{P}_t^j - P_t^{j}$$
+$$\forall i \in \llbracket 0, n \rrbracket,~~R_t^i = \widehat{R}_t^i + \widehat{P}_t^i - P_t^i$$
 \end{itemize}
 
 
