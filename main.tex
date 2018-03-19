@@ -28,8 +28,6 @@
 
 \begin{document}
 
-\othernote{Mettre des points à la fin des équations lorsqu'elles finissent des phrases}
-
 \maketitle
 
 \section{Introduction}
@@ -185,14 +183,8 @@ In this subsection, we establish the chronology of events without giving the equ
 At the end of this stage, the state of a bank is given by a vector of five variables :
 $(\widehat{E}^i_t, \widehat{D}^i_t, \widehat{R}^i_t, \widehat{P}^i_t, \widehat{L}^i_t)$.
 
-\othernote{Mettre des chapeaux pour toutes les variables. }
-
-\othernote{Definition : a bank defaults when...}
-
-\item \textbf{Stage 2 : checking for default}. Banks for which $E_t^i \leq \bar{E}^i$ declare
+\item \textbf{Stage 2 : checking for default}. Banks for which $\wh E_t^i \leq \bar{E}^i$ declare
 default and are liquidated (see section \ref{dynamic with bankruptcy} for the detailed processes of liquidation). Although their defaulting is not public information yet, it will become so at the beginning of the next period. The vector $\bar{E}$ which components are the $\bar{E}^i$ is a minimal threshold value for the equity of each bank. It enables us to implicitly include deposits from investors or individuals from outside the system in the balance sheets of banks.
-
-\othernote{On sait d'ores et déjà que D, L et E au temps t sont les valeurs chapeaux, mais d'un point de vue formalisme mieux vaut garder les chapeaux pour toutes les variables par soucis de clareté}
 
 \item \textbf{Stage 3 : balance sheet management} (detailed in \ref{balance_sheet_management})
 Banks readjust between portfolio and reserves according to (detailed in \ref{ConstraintsInitialConditions}):
@@ -241,22 +233,26 @@ $$ \mathbb{E}[E_t ^i|\mathcal{F}_{t-1}] \geq E_{t-1}^i $$
 Let us remark first that since $E_{t-1}^i \geq \bar{E}^i$, this implies that a bank that has not defaulted in $t-1$ cannot be expected to default in $t$.
 
 \paragraph{}
-Applying expectation conditionally on $\mathcal{F}_t$ on to (\ref{eq:eqtdyna}) we get : 
+Applying expectation conditionally on $\mathcal{F}_t$ to (\ref{eq:eqtdyna}) we get: 
 
-$$\mathbb{E}[E_t^i|\mathcal{F}_{t-1}] = E_{t-1}^i + rL_{t-1}^i - rD_{t-1}^i + \sum_{l=1}^{m} Q_{t-1}^{il} X_{t-1}^l \mathbb{E}[\omega_t^l|\mathcal{F}_{t-1}]$$
+$$\mathbb{E}[E_t^i|\mathcal{F}_{t-1}] = E_{t-1}^i + rL_{t-1}^i - rD_{t-1}^i + \sum_{l=1}^{m} Q_{t-1}^{il} X_{t-1}^l \mathbb{E}[\omega_t^l|\mathcal{F}_{t-1}].$$
 
-Which is equivalent to :
+Which is equivalent to:
 
-$$\mathbb{E}[E_t ^i|\mathcal{F}_{t-1}] - E_{t-1} ^i = rL_{t-1}^i - rD_{t-1}^i + \sum_{l=1}^{m} Q_{t-1}^{il} X^l_{t-1}\mu_l$$
+$$\mathbb{E}[E_t ^i|\mathcal{F}_{t-1}] - E_{t-1} ^i = rL_{t-1}^i - rD_{t-1}^i + \sum_{l=1}^{m} Q_{t-1}^{il} X^l_{t-1}\mu_l.$$
 
-Thus the condition is :
+As a consequence, 
 
-$$rL_{t-1}^i + \sum_{l=1}^{m} Q_{t-1}^{il} X^l_{t-1}\mu_l \geq rD_{t-1}^i $$
+$$ \mathbb{E}[E_t ^i|\mathcal{F}_{t-1}] \geq E_{t-1}^i \Leftrightarrow L_{t-1}^i - rD_{t-1}^i + \sum_{l=1}^{m} Q_{t-1}^{il} X^l_{t-1}\mu_l \geq 0.$$
 
-Although this condition may prove too difficult to enforce at each step. We will thus consider only its initial version :
+Reaaranging the terms, the condition condition is:
+
+$$rL_{t-1}^i + \sum_{l=1}^{m} Q_{t-1}^{il} X^l_{t-1}\mu_l \geq rD_{t-1}^i.$$
+
+Actually this condition may prove too difficult to enforce at each future period. We will thus consider only its initial version in $t=0$:
 
 \begin{equation}\label{eq:nolosers}
-rL_0^i + \sum_{l=1}^{m} Q_0^{il} X_0^l\mu_l \geq rD_0^i
+rL_0^i + \sum_{l=1}^{m} Q_0^{il} X_0^l\mu_l \geq rD_0^i.
 \end{equation}
 
 
@@ -291,17 +287,19 @@ To prove this, let us distinguish between two case.
     $$ \widehat L_t^i - \widehat D_t^i \geq 0 \Rightarrow r(\widehat L_t^i - \widehat D_t^i) \geq 0 \Rightarrow \widehat R_t^i + r(\widehat L_t^i - \widehat D_t^i) \geq 0.$$
     \item $\widehat D^i_t > \widehat L^i_t$. The bank has not defaulted in $t$, thus:
     $$\widehat E^i_t > \bar{E}^i \Rightarrow \widehat E^i_t > 0 \Leftrightarrow \widehat{R}^i_t + \widehat{P}^i_t + \widehat L^i_t - \widehat D^i_t > 0.$$
-    We have :
+    We have:
     $$\widehat D^i_t - \widehat L^i_t > \widehat{R}^i_t + \widehat{P}^i_t.$$
-    Since $ r < 1$ :
+    Since $ r < 1$:
     $$ \widehat{D}^i_t - \widehat L^i_t > r(\widehat D^i_t - L^i_t).$$
-    As a consequence : 
+    As a consequence: 
     $$ \widehat{R}^i_t + \widehat{P}^i_t > r(\wh D^i_t - \wh L^i_t).$$
 \end{itemize}
 
-We can thus conclude that a bank that has not defaulted in $t$ always has enough liquidity to be able to reallocate its liquid assets in $t$ so as to comply with the reserve rule.
+\paragraph{}
+We can thus conclude that a bank that has not defaulted in $t$ always has enough liquidity to be able to reallocate its liquid assets in $t$ so as to comply with the reserve rule. It can do so by selling partially its portfolio in order to increase its reserves.
 
-Thus, this rule enables us to avoid liquidity defaults, and being solvent is a sufficient condition to be able to comply with it. This is coherent with the fact that we want to model only fundamental default. Default can be defined as either having not enough cash to honor one's financial obligation (liquidity default) or not having enough equity (solvency default)---or both. We have shown here that since the only illiquid assets are inter-bank loans, if equity is positive in $t$ then by construction liquidity default cannot happen in $t$. 
+\paragraph{}
+Thus, this rule enables us to avoid liquidity defaults, and being solvent is a sufficient condition to be able to comply with it. Since we want to account only for solvency defaults, our model is coherent. Indeed, default can be defined as either having not enough cash to honor one's financial obligation (liquidity default) or not having enough equity (solvency default)---or both. We have shown here that since the only illiquid assets are inter-bank loans, if equity is positive in $t$ then by construction liquidity default cannot happen in $t$. 
 
 %\othernote{IMPORTANT : On pourrait définir le défaut comme soit plus assez de capital soit plus assez d'equity. Mais vu qu'il n'y a pas d'actif non liquide autre que inter bancaire, si l'equity est positive, par construction du modèle, nous savons que nous allons pouvoir payer au temps suivant. En d'autres termes nous n'observons que des "Fundamental insolvency"}
 
@@ -316,10 +314,10 @@ $$\max_{\substack{P_t^i \leq \alpha^i \mathcal{A}_t^i \\ R_t^i + r(L_t^i - D_t^i
 
 \subsubsection{Reserves}
 
-The evolution of reserves are as follows : 
+The evolution of reserves is given by: 
 
 \begin{equation}\label{eq:rsv}
-\widehat{R}_t^i = R_{t-1}^i + rL_t^i - rD_t^i
+\widehat{R}_t^i = R_{t-1}^i + r \wh L_t^i - r \wh D_t^i
 \end{equation}
 
 %\paragraph{}
@@ -352,18 +350,18 @@ Although it is simpler to define $\Delta X_t = X_t - X_{t-1}t$ and write the pre
 In math form, the accounting definition of equity is : 
 
 \begin{equation}\label{eq:eqtdef}
-E^i_t = \widehat{R}^i_t + L^i_t + \widehat{P}_t^i - D^i_t
+\wh E^i_t = \wh R^i_t + \wh P_t^i + \wh L^i_t - \wh D^i_t
 \end{equation}
 
 Putting all above dynamic equation together yields: 
 
-$$ E^i_t = R_{t-1}^i + L^i_t - D^i_t + P_{t-1}^i + rL_t^i - rD_t^i + Q_{t-1}^i\Delta X_t$$
+$$ \wh E^i_t = R_{t-1}^i + r \wh L_t^i - r \wh D_t^i + \wh L^i_t - \wh D^i_t + P_{t-1}^i + Q_{t-1}^i\Delta X_t$$
 
-If no bank has defaulted in $t-1$, we have that $L^i_t = L^i_{t-1}$ and $D^i_t = D^i_{t-1}$, and thus we have :
+If no bank has defaulted in $t-1$, we have that $\wh L^i_t = L^i_{t-1}$ and $ \wh D^i_t = D^i_{t-1}$, and thus we have:
 
 $$E^i_t = R_{t-1}^i + L^i_{t-1} + P_{t-1}^{i} - D^i_{t-1} + rL_t^i- rD_t^i + Q_{t-1}^i\Delta X_t$$
 
-We can thus deduce the following recursion formula for equity in the case where no bank has defaulted in the previous period : 
+We can thus deduce the following recursion formula for equity in the case where no bank has defaulted in the previous period: 
 
 \begin{equation}\label{eq:eqtdyna}
 \Leftrightarrow E^i_t = E^i_{t-1} + rL_{t-1}^i - rD_{t-1}^i + Q_{t-1}^i\Delta X_t
@@ -386,17 +384,18 @@ Let us also define the portfolio valuation objective $P_t^{j}$ which corresponds
 No need to rebalance to comply with the reserve rule, although if the objective valuation of the portfolio is to be increased, we must keep in mind that the new portfolio objective must also comply with the reserve rule.
 We distinguish again different cases : 
 \begin{itemize}
-    \item $\widehat{P}_t^i > \alpha^i \mathcal{A}_t^i$. In that case, a portion $\widehat{P}_t^i - \alpha^i \mathcal{A}_t^i$ of the portfolio must be sold. No other actions are required, thus $$P_t^i = \alpha^i \mathcal{A}_t^i$$
-    \item $\widehat{P}_t^i \leq \alpha^i \mathcal{A}_t^i$. In that case the bank wants to increase its portfolio to saturate the constraint if possible given the reserve rule. Thus $$P_t^{i} = \min \left(\alpha^i \mathcal{A}_t^i,~~\widehat{P}_t^i + \widehat{R}_t^i - r(D_t^i - L_t^i) \right)$$
+    \item $\widehat{P}_t^i > \alpha^i \mathcal{A}_t^i$. In that case, a portion $\widehat{P}_t^i - \alpha^i \mathcal{A}_t^i$ of the portfolio must be sold. No other actions are required, thus:
+     $$P_t^i = \alpha^i \mathcal{A}_t^i.$$
+    \item $\widehat{P}_t^i \leq \alpha^i \mathcal{A}_t^i$. In that case the bank wants to increase its portfolio to saturate the constraint if possible given the reserve rule. Thus: $$P_t^{i} = \min \left(\alpha^i \mathcal{A}_t^i,~~\widehat{P}_t^i + \widehat{R}_t^i - r(D_t^i - L_t^i) \right).$$
 \end{itemize}
 
 \paragraph{Reserve rule not matched}
 The bank have to sell a portion of its portfolio to comply with the reserve rule. However, it may sell more if its portfolio is still too large according to the financial choice. Let us distinguish two cases :
 \begin{itemize}
-    \item $\widehat{P}_t^i + \widehat{R}_t^i - r(D_t^i - L_t^i) \leq \alpha^i \mathcal{A}_t^i$. In that case, the bank sells only the amount necessary to comply with the reserve rule --- since $\widehat{R}_t^i - r(D_t^i - L_t^i) < 0$ this is indeed selling . As a consequence : 
-    $$ P_t^{i} = \widehat{P}_t^i + \widehat{R}_t^i - r(D_t^i - L_t^i)$$
-    \item $\widehat{P}_t^i + \widehat{R}_t^i - r(D_t^i - L_t^i) > \alpha^i \mathcal{A}_t^i$. In that case, the bank sells enough to comply with the financial choice which is necessarily enough to comply also with the reserve rule. As a consequence : 
-    $$ P_t^i = \alpha^i \mathcal{A}_t^i$$
+    \item $\widehat{P}_t^i + \widehat{R}_t^i - r(D_t^i - L_t^i) \leq \alpha^i \mathcal{A}_t^i$. In that case, the bank sells only the amount necessary to comply with the reserve rule --- since $\widehat{R}_t^i - r(D_t^i - L_t^i) < 0$ this is indeed selling . As a consequence: 
+    $$ P_t^{i} = \widehat{P}_t^i + \widehat{R}_t^i - r(D_t^i - L_t^i).$$
+    \item $\widehat{P}_t^i + \widehat{R}_t^i - r(D_t^i - L_t^i) > \alpha^i \mathcal{A}_t^i$. In that case, the bank sells enough portfolio assets to comply with the financial choice. Which is enough to comply also with the reserve rule since we have: $\widehat{P}_t^i - \alpha^i \mathcal{A}_t^i > - \widehat{R}_t^i + r(D_t^i - L_t^i) $. As a consequence: 
+    $$ P_t^i = \alpha^i \mathcal{A}_t^i.$$
     
 \end{itemize}
 
@@ -404,28 +403,28 @@ The bank have to sell a portion of its portfolio to comply with the reserve rule
 We can actually unify all four cases in the following formula : 
 
 \begin{equation}\label{rebal_synthesis}
-P_t^i = \min(\widehat{P}_t^i + \widehat{R}_t^i - r(D_t^i - L_t^i),~~\alpha^i \mathcal{A}_t^i)
+P_t^i = \min(\widehat{P}_t^i + \widehat{R}_t^i - r(D_t^i - L_t^i),~~\alpha^i \mathcal{A}_t^i).
 \end{equation}
 
 The new amount of reserves is also deduced easily from $P_t^i$: 
 \begin{equation}\label{eq:rebal_reserves}
-R_t^i = \widehat{R}_t^i + \widehat{P}_t^i - P_t^i
+R_t^i = \widehat{R}_t^i + \widehat{P}_t^i - P_t^i.
 \end{equation}
 
 \subsubsection{Find quantities to match a given portfolio valuation objective}
 
 \paragraph{}
-Now that we have found $P_t^{j}$, we show here how to adjust the quantities invested in each asset to match this portfolio valuation objective. Given prices $X_t$ and quantities $Q_{t-1}^j$, we seek to find the vector of quantities $Q_t^{j}$ for which $Q_t^{j}X_{t-1} = P_t^{j}$ while keeping the relative quantities constant. We show how to do this in the appendices \ref{matching_quantities} yielding the following result : 
+Now that $P_t^{j}$ is optimized, we show here how to adjust the quantities invested in each asset to match this portfolio valuation objective. Given prices $X_t$ and quantities $Q_{t-1}^j$, we seek to find the vector of quantities $Q_t^{j}$ for which $Q_t^{j}X_{t-1} = P_t^{j}$ while keeping the relative quantities constant. We show how to do this in the appendices \ref{matching_quantities} yielding the following result: 
 
 \begin{equation}\label{quantities_bij}
-\forall l,~~ Q_t^{il} = Q_{t-1}^{il}\left(1 + \frac{P_t^i - \widehat{P}_t^i}{\widehat{P}_t^i} \right)
+\forall l,~~ Q_t^{il} = Q_{t-1}^{il}\left(1 + \frac{P_t^i - \widehat{P}_t^i}{\widehat{P}_t^i} \right).
 \end{equation}
 
 
 
-Injecting (\ref{rebal_synthesis}) into (\ref{quantities_bij}), we deduce the new quantities :
+Using (\ref{rebal_synthesis}) into (\ref{quantities_bij}), we deduce the new quantities:
 \begin{equation}\label{eq:rebal_quantities}
-\forall l,~~ Q_t^{il} = Q_{t-1}^{il}\left(1 + \frac{\min(\widehat{P}_t^i + \widehat{R}_t^i - r(D_t^i - L_t^i),~~\alpha^i \mathcal{A}_t^i) - \widehat{P}_t^i}{\widehat{P}_t^i} \right)
+\forall l,~~ Q_t^{il} = Q_{t-1}^{il}\left(1 + \frac{\min(\widehat{P}_t^i + \widehat{R}_t^i - r(D_t^i - L_t^i),~~\alpha^i \mathcal{A}_t^i) - \widehat{P}_t^i}{\widehat{P}_t^i} \right).
 \end{equation}
 
 
