@@ -639,13 +639,13 @@ In this section we summarize the fundamental equations of the model.
 \begin{itemize}
 
 \item Portfolio management : set the definitive portfolio valuation for $t+1$
-$$\forall i \in \llbracket 0, n \rrbracket,~~P_t^{i} = \min(\widehat{P}_t^i + \widehat{R}_t^i - r( \wh D_t^i - \wh L_t^i),~~\alpha^i \mathcal{A}_t^i)$$
+$$\forall i \in \overline{\mathcal{D}_{t-1}},~~P_t^{i} = \min(\widehat{P}_t^i + \widehat{R}_t^i - r( \wh D_t^i - \wh L_t^i),~~\alpha^i \mathcal{A}_t^i)$$
 
 \item Update the quantities consequently
-$$\forall i \in \llbracket 0, n \rrbracket,~~\forall l \in \llbracket 0, m \rrbracket,~~Q_t^{il} = Q_{t-1}^{il}\left(1 + \frac{\min(\widehat{P}_t^i + \widehat{R}_t^i - r( \wh D_t^i - \wh L_t^i),~~\alpha^i \mathcal{A}_t^i) - \widehat{P}_t^i}{\widehat{P}_t^i} \right)$$
+$$\forall i \in \overline{\mathcal{D}_{t-1}},~~\forall l \in \llbracket 0, m \rrbracket,~~Q_t^{il} = Q_{t-1}^{il}\left(1 + \frac{\min(\widehat{P}_t^i + \widehat{R}_t^i - r( \wh D_t^i - \wh L_t^i),~~\alpha^i \mathcal{A}_t^i) - \widehat{P}_t^i}{\widehat{P}_t^i} \right)$$
 
 \item Set the definitive reserves for $t+1$ accordingly
-$$\forall i \in \llbracket 0, n \rrbracket,~~R_t^i = \widehat{R}_t^i + \widehat{P}_t^i - P_t^i$$
+$$\forall i \in \overline{\mathcal{D}_{t-1}},~~R_t^i = \widehat{R}_t^i + \widehat{P}_t^i - P_t^i$$
 \end{itemize}
 
 
