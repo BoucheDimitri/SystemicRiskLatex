@@ -7,6 +7,7 @@
 \addbibresource{biblio.bib}
 \usepackage{indentfirst}
 \usepackage{stmaryrd}
+\usepackage{bbm}
 \usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage[toc,page]{appendix} 
@@ -523,7 +524,7 @@ The balance sheet of the liquidator has a special format :
 \end{center}
 
 \paragraph{Liquidation with the liquidator}
-When a bank $j$ goes bankrupt at time $t-1$, the liquidator buys the totality of the bankrupt bank's loans to other banks with a discount $0<\zeta<1$. For the rest the procedure is similar to the previous one :
+When a bank $j$ goes bankrupt at time $t-1$, the liquidator buys the totality of the bankrupt bank's loans to other banks with a discount $0<\zeta<1$. Although, we have to be careful since the bankrupt bank in question may have lent to other defaulting bank. The liquidator does not buy those value-less loans. For the rest the procedure is similar to the previous one :
 
 
  \begin{enumerate}
@@ -532,17 +533,17 @@ When a bank $j$ goes bankrupt at time $t-1$, the liquidator buys the totality of
     \begin{itemize}
         \item if $\widehat{E}_{t-1}^j \leq \bar{E}^j$, $j$ declares default. Which triggers the following liquidation steps.
         \item $\pi_{t-1}^j$ is computed. Portfolio is sold according to its valuation with a discount coefficient $0 < \xi < 1$ applied due to fire-sale. Reserves are included. Finally cash from the loans sold to the liquidator are incorporated 
-        $$\pi_{t-1}^j = \xi \widehat{P}_{t-1}^j + \widehat{R}_{t-1}^j + \zeta L^j_{t-1} $$ 
+        $$\pi_{t-1}^j = \xi \widehat{P}_{t-1}^j + \widehat{R}_{t-1}^j + \zeta \sum_{k \in \overline{\mathcal{D}_{t-1}}} \wh L^{jk}_{t-1} $$ 
     \end{itemize}
     \item In $t$ at stage 1, the default becomes public information which brings about the following modifications : 
     \begin{itemize}
     
         \item The liquidator's balance sheets is updated to incorporate the loans buy-outs (bank $j$'s debtor now owns money to the liquidator) :
         \begin{eqnarray*}
-        \wh R_t^0 &=& \wh R_{t-1}^0 - \zeta L^j_{t-1}\\
-        \wh L_t^0 &=& L_{t-1}^0 + L^j_{t-1}\\
-        \wh E_t^0 &=& E_{t-1}^0 + (1 -\zeta)L^j_{t-1}\\
-        \forall k\neq 0,~~\wh L_t^{0k} &=& L_{t-1}^{0k} + L_{t-1}^{jk}\\
+        \wh R_t^0 &=& \wh R_{t-1}^0 - \zeta \sum_{k \in \overline{\mathcal{D}_{t-1}}} L^{jk}_{t-1} \\
+        \wh L_t^0 &=& L_{t-1}^0 + \sum_{k \in \overline{\mathcal{D}_{t-1}}} L^{jk}_{t-1} \\
+        \wh E_t^0 &=& E_{t-1}^0 + (1 -\zeta)\sum_{k \in \overline{\mathcal{D}_{t-1}}} L^{jk}_{t-1} \\
+        \forall k \in \overline{\mathcal{D}_{t-1}},~~\wh L_t^{0k} &=& L_{t-1}^{0k} + L_{t-1}^{jk}\\
         \end{eqnarray*}
     
         \item The loans matrix is modified :
@@ -588,10 +589,10 @@ In this section we summarize the fundamental equations of the model.
 
     \item Update balance sheet of the liquidator  
     \begin{eqnarray*}
-    \wh R_t^0 &=& R_{t-1}^0 - \zeta \sum_{j \in \mathcal{D}_{t-1}} L^j_{t-1}\\
-    \wh L_t^0 &=& L_{t-1}^0 + \sum_{j \in \mathcal{D}_{t-1}} L^j_{t-1}\\
-    \wh E_t^0 &=& E_{t-1}^0 + (1 -\zeta) \sum_{j \in \mathcal{D}_{t-1}} L^j_{t-1}\\
-    \forall k \neq 0,~~\forall j \in \mathcal{D}_{t-1},~~ \wh L_t^{0k} &=& L_{t-1}^{0k} + L_{t-1}^{jk}.\\
+    \wh R_t^0 &=& R_{t-1}^0 - \zeta \sum_{j \in \mathcal{D}_{t-1}} \sum_{k \in \overline{\mathcal{D}_{t-1}}} L^{jk}_{t-1}\\
+    \wh L_t^0 &=& L_{t-1}^0 + \sum_{j \in \mathcal{D}_{t-1}} \sum_{k \in \overline{\mathcal{D}_{t-1}}} L^{jk}_{t-1}\\
+    \wh E_t^0 &=& E_{t-1}^0 + (1 -\zeta) \sum_{j \in \mathcal{D}_{t-1}} \sum_{k \in \overline{\mathcal{D}_{t-1}}} L^{jk}_{t-1}\\
+    \forall k \in \overline{\mathcal{D}_{t-1}},~~\forall j \in \mathcal{D}_{t-1},~~ \wh L_t^{0k} &=& L_{t-1}^{0k} + L_{t-1}^{jk}.\\
     \end{eqnarray*}
     
     \item The loans matrix is modified :
@@ -627,7 +628,7 @@ In this section we summarize the fundamental equations of the model.
 \begin{itemize}
     
     \item Computation of the proceedings of liquidation
-    $$ \forall j \in \mathcal{D}_{t-1},~~ \pi_t^j = \xi \widehat{P}_t^j + \widehat{R}_t^j + \zeta \wh L^j_t.$$ 
+    $$ \forall j \in \mathcal{D}_{t-1},~~ \pi_t^j = \xi \widehat{P}_t^j + \widehat{R}_t^j + \zeta \sum_{k \in \overline{\mathcal{D}_{t-1}}} \wh L^{jk}_t.$$ 
         
     \item Compute the claim coefficients
     $$\forall i \in \llbracket 0, n \rrbracket,~~\forall j \in \mathcal{D}_{t-1},~~\Psi_t^{ij} = \frac{ \wh L_t^{ij}}{\sum_{s=1}^n \wh L_t^{sj}}.$$
