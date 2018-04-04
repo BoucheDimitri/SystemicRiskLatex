@@ -682,6 +682,63 @@ Thus :
 \forall l,~~ Q_t^{il} = Q_{t-1}^{il}\left(1 + \frac{P_t^{i} - \widehat{P}_t^i}{\widehat{P}_t^i} \right)
 \end{equation*}
 
+\section{Graph initialization}
+
+\paragraph{}
+The aim of this appendix is to find a way to initialize the loans and debts given a graph structure so as to match a given net loans/debts objective. 
+
+\paragraph{}
+We consider the equity vector $E_0$ given (which means that we fix each bank's initial equity). For simplicity's sake let us consider that the vector of initial reserves $R_0$ is given by a fraction $0 < \tau < 1$ of the initial equity. Thus 
+$$R_0 = \tau E_0.$$
+
+For each bank $i$, this leaves us $(1-\tau)E^i_0$ to distribute between $L_0^i - D_0^i$ and $P_0^i$. We will determine first $L_0^i - D_0^i$ for each bank which will give us the ability to make sure that the condition of positive expected equity is matched :
+$$rL_0^i + \sum_{l=1}^{m} Q_0^{il} X_0^l\mu_l \geq rD_0^i.$$
+
+\paragraph{}
+Given a matrix of adjacency of a given graph structure $A$ (non weighted and non directed graph, thus $A$ is symmetric and only contains $0$s and $1$s). We wish to determine a matrix of link weights $W$. The entry $W^{ij}$ corresponds to the net loans/debts situation from $i$ to $j$. If $W^{ij} = 100$ for instance it means that $i$ lent $100$ to $j$. If $W^{ij} = -100$ on the other hand it means that $i$ owes $100$ to $j$. It is obvious that the matrix $L$ can be recovered from $W$.
+
+\paragraph{}
+Let us also consider an objective net loans/debts $Y$ which $i$th entry correspond to the net loans/debt situation we want to impose on bank $i$. Meaning that $Y^i = L_0^i - D_0^i$.
+
+\paragraph{}
+We thus wish to find $W \in \mathbb{R}^{n \times n}$ such that : 
+$$\forall i,~~ Y_i = \sum_{s=1}^n A^{is}W^{is}$$
+
+Since $W$ is anti-symmetric and its diagonal terms must all be zeros, only determining its superior triangle coefficient without the diagonal is sufficient. The previous condition can be expressed equivalently by an under-determined linear system with $(n-1)!$ unknowns and n equations. 
+
+\paragraph{}
+For simplicity's sake we show this transformation only in the case $n=4$. The linear system is given in that case by :
+
+$$
+\begin{bmatrix}
+A^{12} & A^{13} & A^{14} & 0 & 0 & 0 \\
+A^{12} & 0 & 0 & A^{23} & A^{24} & 0 \\
+0 & A^{13} & 0 & A^{23} & 0 & A^{34} \\
+0 & 0 & A^{14} & 0 & A^{24} & A^{34}
+\end{bmatrix}
+\times
+\begin{bmatrix}
+W^{12} \\
+W^{13}\\
+W^{14} \\
+W^{23}\\
+W^{24} \\
+W^{34}
+\end{bmatrix}
+= 
+\begin{bmatrix}
+Y^1 \\
+Y^2\\
+Y^3 \\
+Y^4
+\end{bmatrix}
+$$
+
+\paragraph{}
+We need to pick a vector in the vector space of solutions of this linear system to determine $W$ matrix. We can for instance use the pseudo inverse to find the minimum $l_2$ norm solution and in turn determine a suitable $L$ matrix. 
+
+\paragraph{}
+Such transformation can be of generalized to any $n$ although for big $n$ the $(n-1)!$ number of columns in the matrix may prove numerically problematic.
 
 \end{appendices}
 
