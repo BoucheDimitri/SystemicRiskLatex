@@ -704,7 +704,7 @@ Let us also consider an objective net loans/debts $Y$ which $i$th entry correspo
 We thus wish to find $W \in \mathbb{R}^{n \times n}$ such that : 
 $$\forall i,~~ Y_i = \sum_{s=1}^n A^{is}W^{is}$$
 
-Since $W$ is anti-symmetric and its diagonal terms must all be zeros, only determining its superior triangle coefficient without the diagonal is sufficient. The previous condition can be expressed equivalently by an under-determined linear system with $(n-1)!$ unknowns and n equations. 
+Since $W$ is anti-symmetric and its diagonal terms must all be zeros, only determining its superior triangle coefficient without the diagonal is sufficient. The previous condition can be expressed equivalently by an under-determined linear system with $\frac{(n-1)n}{2}$ unknowns and $n$ equations. 
 
 \paragraph{}
 For simplicity's sake we show this transformation only in the case $n=4$. The linear system is given in that case by :
@@ -737,8 +737,6 @@ $$
 \paragraph{}
 We need to pick a vector in the vector space of solutions of this linear system to determine $W$ matrix. We can for instance use the pseudo inverse to find the minimum $l_2$ norm solution and in turn determine a suitable $L$ matrix. 
 
-\paragraph{}
-Such transformation can be of generalized to any $n$ although for big $n$ the $(n-1)!$ number of columns in the matrix may prove numerically problematic.
 
 \end{appendices}
 
