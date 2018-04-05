@@ -772,10 +772,10 @@ Our system is thus :
 $$Bw = y$$
 
 \paragraph{}
-We need to pick a vector in the vector space of solutions of this linear system to determine $W$ matrix. We can for instance use the pseudo inverse to find the minimum $l_2$ norm solution.
+We need to pick a vector in the vector space of solutions of this linear system. We can for instance use the pseudo inverse to find the minimum $l_2$ norm solution.
 
 \paragraph{}
-Nevertheless, if we only minimize the $l_2$, we are not assured that all the link that should be present (non null coefficient in the matrix $A$) will have non null weights. One idea would be to add an inequality constraint on the absolute values of the coefficients of $W$ to the pseudo-inverse problem yielding the following modified problem (we define $m = \frac{n(n-1)}{2}$):
+Nevertheless, if we only minimize the $l_2$ norm, we are not assured that all the link that should be present (non null coefficient in the matrix $A$) will effectively have non null weights in the solution. One idea would be to add an inequality constraint on the absolute values of the coefficients of $W$ to the pseudo-inverse problem yielding the following modified problem (we define $m = \frac{n(n-1)}{2}$):
 
 \begin{eqnarray*}
 &\min_{w \in \mathbb{R}^m}& w^T w\\
@@ -785,6 +785,19 @@ subject~~to~~:~~&Bw = y& \\
 
 \paragraph{}
 Where $\kappa \geq 0$ is a chosen threshold.
+
+\paragraph{}
+We can use the following equivalent formulation in order to get rid of the non differentiable equality constraints functions : 
+
+\begin{eqnarray*}
+&\min_{(z^{+}, z^{-}) \in \mathbb{R}^{2m}}& (z^{+} - z^{-})^T (z^{+} - z^{-})\\
+subject~~to~~:~~&B(z^{+} - z^{-}) = y& \\
+&\forall i \in \llbracket 1, m \rrbracket , & z^{+}_i + z^{-}_i \geq \kappa \\
+&\forall i \in \llbracket 1, m \rrbracket , & z^{+}_i z^{-}_i = 0 \\
+& z^{+} \geq 0 & \\
+& z^{-} \geq 0 &\\
+\end{eqnarray*}
+
 
 
 \end{appendices}
