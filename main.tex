@@ -787,15 +787,13 @@ subject~~to~~:~~&Bw = y& \\
 Where $\kappa \geq 0$ is a chosen threshold.
 
 \paragraph{}
-We can use the following equivalent formulation in order to get rid of the non differentiable equality constraints functions : 
+We can use the following equivalent formulation in order to get rid of the absolute value in the constraints
 
 \begin{eqnarray*}
-&\min_{(z^{+}, z^{-}) \in \mathbb{R}^{2m}}& (z^{+} - z^{-})^T (z^{+} - z^{-})\\
-subject~~to~~:~~&B(z^{+} - z^{-}) = y& \\
-&\forall i \in \llbracket 1, m \rrbracket , & z^{+}_i + z^{-}_i \geq \kappa \\
-&\forall i \in \llbracket 1, m \rrbracket , & z^{+}_i z^{-}_i = 0 \\
-& z^{+} \geq 0 & \\
-& z^{-} \geq 0 &\\
+&\min_{w \in \mathbb{R}^m}& w^T w\\
+subject~~to~~:~~&Bw = y& \\
+&\forall i \in \llbracket 1, m \rrbracket , &\kappa - w_i \leq 0 \\
+&\forall i \in \llbracket 1, m \rrbracket , &\kappa + w_i \leq 0
 \end{eqnarray*}
 
 
