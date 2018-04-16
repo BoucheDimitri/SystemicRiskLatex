@@ -259,19 +259,19 @@ Which is equivalent to:
 
 %$$\mathbb{E}[E_t ^i|\mathcal{F}_{t-1}] - E_{t-1} ^i = rL_{t-1}^i - rD_{t-1}^i + \sum_{l=1}^{m} Q_{t-1}^{il} X^l_{t-1}\mu_l.$$
 
-$$\mathbb{E}[E_t ^i|\mathcal{F}_{t-1}] - E_{t-1} ^i = rL_{t-1}^i - rD_{t-1}^i + Q_{t-1}^{i} \mu_l.$$
+$$\mathbb{E}[E_t ^i|\mathcal{F}_{t-1}] - E_{t-1} ^i = rL_{t-1}^i - rD_{t-1}^i + Q_{t-1}^{i} \mu.$$
 
 As a consequence, 
 
 %$$ \mathbb{E}[E_t ^i|\mathcal{F}_{t-1}] \geq E_{t-1}^i \Leftrightarrow rL_{t-1}^i - rD_{t-1}^i + \sum_{l=1}^{m} Q_{t-1}^{il} X^l_{t-1}\mu_l \geq 0.$$
 
-$$ \mathbb{E}[E_t ^i|\mathcal{F}_{t-1}] \geq E_{t-1}^i \Leftrightarrow rL_{t-1}^i - rD_{t-1}^i + Q_{t-1}^{i} \mu_l \geq 0.$$
+$$ \mathbb{E}[E_t ^i|\mathcal{F}_{t-1}] \geq E_{t-1}^i \Leftrightarrow rL_{t-1}^i - rD_{t-1}^i + Q_{t-1}^{i} \mu \geq 0.$$
 
 Rearranging the terms, the condition condition is:
 
 %$$rL_{t-1}^i + \sum_{l=1}^{m} Q_{t-1}^{il} X^l_{t-1}\mu_l \geq rD_{t-1}^i.$$
 
-$$ Q_{t-1}^{i} \mu_l \geq r(D_{t-1}^i - L_{t-1}^i)$$
+$$ Q_{t-1}^{i} \mu \geq r(D_{t-1}^i - L_{t-1}^i)$$
 
 Actually this condition may prove too difficult to enforce at each future period. We will thus consider only its initial version:
 
@@ -280,7 +280,7 @@ Actually this condition may prove too difficult to enforce at each future period
 %\end{equation}
 
 \begin{equation}\label{eq:nolosers}
-Q_0^{i} \mu_l \geq r(D_0^i - L_0^i).
+Q_0^{i} \mu \geq r(D_0^i - L_0^i).
 \end{equation}
 
 
@@ -753,15 +753,128 @@ We describe in this appendix how we go about initializing the balance sheets qua
 \item The choice of the division of liquid assets between portfolio and reserves.
 \end{itemize}
 
-Although we need to initialize such that the following constraints are satisfied : 
+\subsection{Constraints}
+
+Although we need to initialize such that the following constraints are satisfied:
 \begin{itemize}
-\item The condition (\ref{eq:nolosers}) : $$Q_0^{i} \mu_l \geq r(D_0^i - L_0^i).$$
+\item The condition (\ref{eq:nolosers}) : $$Q_0^{i} \mu \geq r(D_0^i - L_0^i).$$
 \item The reserve rule (\ref{eq:rsvrule}): $$R_0^i \geq r(D_0^i - L_0^i).$$
 \item A leverage objective : $$ \frac{\mathcal{L}_0^i}{E_0^i} \leq \beta^i \lambda^{\star}.$$ Where $\lambda^{\star}$ is a regulatory leverage threshold and $\beta \in [0, 1]$ is a behavior parameter for the banks. This condition can be reformulated as : 
 $$ E_0^i \geq \frac{D_0^i}{\lambda^{\star}\beta^i - 1}.$$
 Let us define the leverage lower bound on equity by : 
 $$ E_0^{i \star} = \frac{D_0^i}{\lambda^{\star}\beta^i - 1}.$$
 \end{itemize}
+
+\subsubsection{Rewriting of the first constraint in terms of portfolio}
+
+\paragraph{}
+Let us first focus on the first condition since it needs to be transformed to be expressed as a condition on $P_0^i$. Firstly, as stated earlier, the relative quantities invested in each assets are given for each bank. 
+
+\paragraph{}
+Let us denote by $q^i \in \mathbb{R}^m$ the vector of the relative fractions invested in the risky assets for bank $i$. As a consequence, we have : 
+$$Q_0^i = p^i q^i $$
+
+\paragraph{}
+Let us also introduce the portfolio size variable $p^i \in \mathbb{R}^+$. Using this variable, we can characterize $P_0^i$ using the following equality :  
+$$P_0^i = p^i q^{iT} X_0.$$
+
+\paragraph{}
+To finish with, we normalize the initial values of all assets, meaning that 
+$$X_0 = x_0 \mathbf{1}_{\mathbb{R}^m}.$$. 
+
+\paragraph{}
+As a consequence,
+
+$$P_0^i = p^i q^{iT} x_0 \mathbf{1}_{\mathbb{R}^m} = x_0 p^i$$
+
+\paragraph{}
+Now, we introduce the variable : 
+$$ \tilde{\mu}^i = q^{iT} \mu.$$
+
+We have : 
+$$ p^i \tilde{\mu}^i = Q_0^{i} \mu.$$
+
+And thus : 
+$$ P_0^i \tilde{\mu}^i = x_0 Q_0^{i} \mu.$$
+
+Which finally implies : 
+$$ P_0^i \frac{\tilde{\mu}^i}{x_0} = Q_0^{i} \mu.$$
+
+\paragraph{}
+We can as a consequence rewrite the condition (\ref{eq:nolosers}) in terms of portfolio as :
+$$P_0^i \frac{\tilde{\mu}^i}{x_0} \geq r(D_0^i - L_0^i).$$
+
+\subsection{Choosing equities}
+
+\paragraph{}
+We now want to choose equities such large enough such that the constraints can be satisfied. 
+
+\paragraph{}
+Conditions (\ref{eq:nolosers}) and (\ref{eq:rsvrule}) can be written respectively as : 
+
+$$P_0^i \geq \frac{x_0}{\tilde{\mu}^i}r(D_0^i - L_0^i)$$
+$$R_0^i \geq r(D_0^i - L_0^i).$$
+
+Summing the two, we get : 
+$$P_0^i + R_0^i  \geq r(D_0^i - L_0^i)(\frac{x_0}{\tilde{\mu}^i} + 1).$$
+
+Adding $L_0^i$ and subtracting  $D_0^i$ on both sides we get : 
+$$P_0^i + R_0^i + L_0^i - D_0^i \geq r(D_0^i - L_0^i)(\frac{x_0}{\tilde{\mu}^i} + 1) + L_0^i - D_0^i.$$
+
+Which is equivalent to : 
+
+$$E_0^i\geq (D_0^i - L_0^i)(r\frac{x_0}{\tilde{\mu}^i} + r - 1).$$
+
+Let us define then the quantity :
+$$\tilde{E}_0^i = (D_0^i - L_0^i)(r\frac{x_0}{\tilde{\mu}^i} + r - 1).$$
+
+We must then choose the initial equity such that it implies enough liquid asset via the above condition and such that it also respects the leverage objective. This can be stated synthetically using the following inequality : 
+$$E_0^i\geq \max (\tilde{E}_0^i, E_0^{i \star}) $$
+
+\subsection{Defining portfolio and reserves}
+
+Once the equity has been chosen, the sum $P_0^i + R_0^i$ is implicitly also chosen since $ P_0^i + R_0^i = E_0^i - L_0^i + D_0^i $
+
+We can then choose $P_0^i$ and $R_0^i$ solving the following optimization problem : 
+
+$$\max_{\substack{P_0^i \leq \alpha^i \mathcal{A}_t^i \\ R_0^i \geq r(D_0^i - L_0^i) \\ P_0^i + R_0^i = E_0^i - L_0^i + D_0^i \\ P_0^i \geq \frac{x_0}{\tilde{\mu}^i}r(D_0^i - L_0^i)}} P_0^i$$
+
+In order to avoid non feasibility, we must ensure when choosing $\alpha_i$ that :
+
+$$ \alpha_i \mathcal{A}_0^i \geq \frac{x_0}{\tilde{\mu}^i}r(D_0^i - L_0^i).$$
+
+Which is equivalent to : 
+
+$$ \alpha_i \geq \frac{x_0 r(D_0^i - L_0^i)}{\mathcal{A}_0^i \tilde{\mu}^i}.$$
+
+If $\alpha_i$ is chosen this way, we can apply the same resolution as in the financial choice problem. We have chosen the equity such that it is large enough to satisfy both conditions ((\ref{eq:nolosers}) and (\ref{eq:rsvrule}))and we maximize the value of the portfolio thus the choice of $\alpha_i$ described above alone ensures that the above problem and the financial choice problem in $t=0$ are equivalent : 
+
+$$\max_{\substack{P_0^i \leq \alpha^i \mathcal{A}_t^i \\ R_0^i \geq r(D_0^i - L_0^i) \\ P_0^i + R_0^i = E_0^i - L_0^i + D_0^i}} P_0^i$$
+
+Only the equality constraint is different. Taking this into account yields the solution : 
+
+$$
+P_0^i = \min(E_0^i - L_0^i + D_0^i - r(D_0^i - L_0^i),~~\alpha^i \mathcal{A}_0^i).
+$$
+
+Factorizing by $(D_0^i - L_0^i)$ :
+$$
+P_0^i = \min(E_0^i + (1 - r)(D_0^i - L_0^i),~~\alpha^i \mathcal{A}_0^i).
+$$
+
+We deduce the reserves directly from there : 
+
+$$
+R_0^i = E_0^i - L_0^i + D_0^i - P_0^i
+$$
+
+Since :
+$$p^i = \frac{P_0^i}{x_0},$$ 
+and : 
+$$Q_0^i = p^i q^i,$$
+
+We can easily deduce the initial quantities : 
+$$Q_0^i = \frac{P_0^i}{x_0} q^i.$$
 
 %\paragraph{}
 %Multiplying the condition inequality : $$Q_0^{i} \mu_l \geq r(D_0^i - %L_0^i)$$ by the vector of initial prices $X_0^T$ we get the following %vector inequality (we can do so because all its entries are positive): 
