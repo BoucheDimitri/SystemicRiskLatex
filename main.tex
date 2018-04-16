@@ -742,6 +742,39 @@ Thus :
 \forall l,~~ Q_t^{il} = Q_{t-1}^{il}\left(1 + \frac{P_t^{i} - \widehat{P}_t^i}{\widehat{P}_t^i} \right)
 \end{equation*}
 
+
+\section{Initialization given a loans structure}
+
+\paragraph{}
+We describe in this appendix how we go about initializing the balance sheets quantities once a weighted and directed graph is given. Obviously this graph entirely characterizes the matrix of loans $L$, and as a consequence the variables $L_0^i$ and $D_0^i$ for all the banks. This gives us two degrees of freedom : 
+
+\begin{itemize}
+\item The choice of equities which implicitly determines the amount of liquid assets ($P_0^i + R_0^i$)
+\item The choice of the division of liquid assets between portfolio and reserves.
+\end{itemize}
+
+Although we need to initialize such that the following constraints are satisfied : 
+\begin{itemize}
+\item The condition (\ref{eq:nolosers}) : $$Q_0^{i} \mu_l \geq r(D_0^i - L_0^i).$$
+\item The reserve rule (\ref{eq:rsvrule}): $$R_0^i \geq r(D_0^i - L_0^i).$$
+\item A leverage objective : $$ \frac{\mathcal{L}_0^i}{E_0^i} \leq \beta^i \lambda^{\star}.$$ Where $\lambda^{\star}$ is a regulatory leverage threshold and $\beta \in [0, 1]$ is a behavior parameter for the banks. This condition can be reformulated as : 
+$$ E_0^i \geq \frac{D_0^i}{\lambda^{\star}\beta^i - 1}.$$
+Let us define the leverage lower bound on equity by : 
+$$ E_0^{i \star} = \frac{D_0^i}{\lambda^{\star}\beta^i - 1}.$$
+\end{itemize}
+
+%\paragraph{}
+%Multiplying the condition inequality : $$Q_0^{i} \mu_l \geq r(D_0^i - %L_0^i)$$ by the vector of initial prices $X_0^T$ we get the following %vector inequality (we can do so because all its entries are positive): 
+
+%$$ X_0^T Q_0^{i} \mu_l \geq r(D_0^i - L_0^i).$$
+
+
+
+
+
+
+
+
 %\section{Graph initialization}
 
 %\paragraph{}
