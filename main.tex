@@ -119,13 +119,21 @@ There are $m$ risky assets in the economy. We take a wide definition of risky as
 Each risky assets has a time-dependant valuation. For a given $l \in \llbracket 1, m \rrbracket $, let us denote by $X_t^l$ this price. Our model is in discrete time.
 
 \paragraph{}
-For now, those investments do not yield dividend. As a consequence gains (resp. losses) only come from increases (resp. drops) in the valuations. We define the returns : 
-$$\omega_{t-1}^l = \frac{X_t^l - X_{t-1}^l}{X_{t-1}^l}$$
+For now, those investments do not yield dividend. As a consequence gains (resp. losses) only come from increases (resp. drops) in the valuations. 
+
+%We define the returns : 
+%$$\omega_{t-1}^l = \frac{X_t^l - X_{t-1}^l}{X_{t-1}^l}$$
+
+We model the movements in prices using gaussian increases : 
+
+$$ X_t^l = X_{t-1}^l + \omega_{t-1}^l$$
 
 We model them using independent Gaussian random variables.
     $$\omega_{t-1}^l \sim \mathcal{N}(\mu_l, \sigma_l^2)$$
     
-We denote by $\omega_t$ the vector of returns. Since its components are Gaussian and independent, this is a Gaussian vector with :
+%We denote by $\omega_t$ the vector of returns. 
+We denote by $\omega_t$ the vector of increases.
+Since its components are Gaussian and independent, this is a Gaussian vector with :
     \begin{itemize}
         \item Mean vector $\mu \in \mathcal{M}_{m, 1}(\mathbb{R})$
         \item Covariance matrix $\Sigma = Diag[(\sigma_l^2)_{1\leq l \leq m}] \in \mathcal{M}_{m, m}(\mathbb{R}^+)$.
@@ -133,11 +141,12 @@ We denote by $\omega_t$ the vector of returns. Since its components are Gaussian
     
     $$\omega_{t-1} \sim \mathcal{N}(\mu, \Sigma)$$
 
-Using returns, we have the following relation for prices evolution :
+%Using returns, we have the following relation for prices evolution :
     
-    $$ X_t^l = X_{t-1}^l (1 + \omega^l_t) $$
+    %$$ X_t^l = X_{t-1}^l (1 + \omega^l_t) $$
     
-We make the assumptions that returns are independents across time :
+%We make the assumptions that returns are independents across time :
+We make the assumptions that increases are independents across time :
     
     $$ \forall t \neq t',~ w_{t-1} \indep w_{t-1'} $$
     
@@ -221,9 +230,15 @@ We need to introduce additional hypothesis, initial conditions and constraints i
 \subsubsection{Bank should have a positive expected net-worth delta}\label{expected losers}
 
 \paragraph{Expected returns vs interest rates}
-Since investment opportunities' returns are uncertain, investment opportunities must offer a risk premium---although loans to other banks are risky too they are obviously less so . This implies a first condition on the means $\mu$ of the vector of returns :
+Since investment opportunities' returns are uncertain, investment opportunities must offer a risk premium---although loans to other banks are risky too they are obviously less so . 
 
-    $$ \forall l \in \llbracket 1, m \rrbracket,~ \mu_l \geq r $$
+%This implies a first condition on the means $\mu$ of the vector of returns :
+
+This implies a first initial condition on the means $\mu$ of the vector of increases in relation to the initial prices :
+
+    %$$ \forall l \in \llbracket 1, m \rrbracket,~ \mu_l \geq r $$
+    
+    $$ \forall l \in \llbracket 1, m \rrbracket,~ \frac{\mu_l}{X_0^l} \geq r $$
     
     
 \paragraph{Balance sheets coherence}
@@ -236,24 +251,36 @@ Let us remark first that since $E_{t-1}^i \geq \bar{E}^i$, this implies that a b
 \paragraph{}
 Applying expectation conditionally on $\mathcal{F}_t$ to (\ref{eq:eqtdyna}) we get: 
 
-$$\mathbb{E}[E_t^i|\mathcal{F}_{t-1}] = E_{t-1}^i + rL_{t-1}^i - rD_{t-1}^i + \sum_{l=1}^{m} Q_{t-1}^{il} X_{t-1}^l \mathbb{E}[\omega_t^l|\mathcal{F}_{t-1}].$$
+%$$\mathbb{E}[E_t^i|\mathcal{F}_{t-1}] = E_{t-1}^i + rL_{t-1}^i - rD_{t-1}^i + \sum_{l=1}^{m} Q_{t-1}^{il} X_{t-1}^l \mathbb{E}[\omega_t^l|\mathcal{F}_{t-1}].$$
+
+$$\mathbb{E}[E_t^i|\mathcal{F}_{t-1}] = E_{t-1}^i + rL_{t-1}^i - rD_{t-1}^i + Q_{t-1}^{i} \mathbb{E}[\omega_t^l|\mathcal{F}_{t-1}].$$
 
 Which is equivalent to:
 
-$$\mathbb{E}[E_t ^i|\mathcal{F}_{t-1}] - E_{t-1} ^i = rL_{t-1}^i - rD_{t-1}^i + \sum_{l=1}^{m} Q_{t-1}^{il} X^l_{t-1}\mu_l.$$
+%$$\mathbb{E}[E_t ^i|\mathcal{F}_{t-1}] - E_{t-1} ^i = rL_{t-1}^i - rD_{t-1}^i + \sum_{l=1}^{m} Q_{t-1}^{il} X^l_{t-1}\mu_l.$$
+
+$$\mathbb{E}[E_t ^i|\mathcal{F}_{t-1}] - E_{t-1} ^i = rL_{t-1}^i - rD_{t-1}^i + Q_{t-1}^{i} \mu_l.$$
 
 As a consequence, 
 
-$$ \mathbb{E}[E_t ^i|\mathcal{F}_{t-1}] \geq E_{t-1}^i \Leftrightarrow L_{t-1}^i - rD_{t-1}^i + \sum_{l=1}^{m} Q_{t-1}^{il} X^l_{t-1}\mu_l \geq 0.$$
+%$$ \mathbb{E}[E_t ^i|\mathcal{F}_{t-1}] \geq E_{t-1}^i \Leftrightarrow rL_{t-1}^i - rD_{t-1}^i + \sum_{l=1}^{m} Q_{t-1}^{il} X^l_{t-1}\mu_l \geq 0.$$
 
-Rearanging the terms, the condition condition is:
+$$ \mathbb{E}[E_t ^i|\mathcal{F}_{t-1}] \geq E_{t-1}^i \Leftrightarrow rL_{t-1}^i - rD_{t-1}^i + Q_{t-1}^{i} \mu_l \geq 0.$$
 
-$$rL_{t-1}^i + \sum_{l=1}^{m} Q_{t-1}^{il} X^l_{t-1}\mu_l \geq rD_{t-1}^i.$$
+Rearranging the terms, the condition condition is:
 
-Actually this condition may prove too difficult to enforce at each future period. We will thus consider only its initial version in $t=0$:
+%$$rL_{t-1}^i + \sum_{l=1}^{m} Q_{t-1}^{il} X^l_{t-1}\mu_l \geq rD_{t-1}^i.$$
+
+$$ Q_{t-1}^{i} \mu_l \geq r(D_{t-1}^i - L_{t-1}^i)$$
+
+Actually this condition may prove too difficult to enforce at each future period. We will thus consider only its initial version:
+
+%\begin{equation}\label{eq:nolosers}
+%rL_0^i + \sum_{l=1}^{m} Q_0^{il} X_0^l\mu_l \geq rD_0^i.
+%\end{equation}
 
 \begin{equation}\label{eq:nolosers}
-rL_0^i + \sum_{l=1}^{m} Q_0^{il} X_0^l\mu_l \geq rD_0^i.
+Q_0^{i} \mu_l \geq r(D_0^i - L_0^i).
 \end{equation}
 
 
@@ -331,18 +358,33 @@ The evolution of reserves is given by:
 \subsubsection{Portfolio}
 
 \paragraph{}
-Using the returns, the dynamic of the portfolio is given by :
+%Using the returns, the dynamic of the portfolio is given by :
 
-\begin{eqnarray*}
-\widehat{P}_t^{i} = \sum_{l=1}^{m} Q_{t-1}^{il} X_{t-1}^l (1+\omega_t^l) \\
-\widehat{P}_t^{i} = P_{t-1}^{i} + \sum_{l=1}^{m} Q_{t-1}^{il} X_{t-1}^l \omega_t^l
-\end{eqnarray*}
-     
-Although it is simpler to define $\Delta X_t = X_t - X_{t-1}t$ and write the previous dynamic relation using dot products: 
+%\begin{eqnarray*}
+%\widehat{P}_t^{i} = \sum_{l=1}^{m} Q_{t-1}^{il} X_{t-1}^l (1+\omega_t^l) \\
+%\widehat{P}_t^{i} = P_{t-1}^{i} + \sum_{l=1}^{m} Q_{t-1}^{il} X_{t-1}^l \omega_t^l
+%\end{eqnarray*}
+
+By definition : 
+
+$$\widehat{P}_t^{i} = Q_{t-1}^i X_t.$$
+
+Using the dynamics of the risky assets this is equivalent to : 
+
+$$ \widehat{P}_t^{i} = Q_{t-1}^i (X_{t-1} + \omega_{t-1}).$$
+
+Supposing that bank $i$ has not defaulted in $t-1$ :
 
 \begin{equation}\label{eq:ptf}
-\widehat{P}_t^{i} = P_{t-1}^{i} + Q_{t-1}^i\Delta X_t
+\widehat{P}_t^{i} = P_{t-1}^{i} + Q_{t-1}^i \omega_t.
 \end{equation}
+
+     
+%Although it is simpler to define $\Delta X_t = X_t - X_{t-1}t$ and write the previous dynamic relation using dot products: 
+
+%\begin{equation}\label{eq:ptf}
+%\widehat{P}_t^{i} = P_{t-1}^{i} + Q_{t-1}^i\Delta X_t
+%\end{equation}
 
 
 \subsubsection{Equity}
@@ -356,16 +398,25 @@ In math form, the accounting definition of equity is :
 
 Putting all above dynamic equation together yields: 
 
-$$ \wh E^i_t = R_{t-1}^i + r \wh L_t^i - r \wh D_t^i + \wh L^i_t - \wh D^i_t + P_{t-1}^i + Q_{t-1}^i\Delta X_t$$
+%$$ \wh E^i_t = R_{t-1}^i + r \wh L_t^i - r \wh D_t^i + \wh L^i_t - \wh D^i_t + P_{t-1}^i + Q_{t-1}^i\Delta X_t$$
+
+$$ \wh E^i_t = R_{t-1}^i + r \wh L_t^i - r \wh D_t^i + \wh L^i_t - \wh D^i_t + P_{t-1}^i + Q_{t-1}^i \omega_t$$
+
 
 If no bank has defaulted in $t-1$, we have that $\wh L^i_t = L^i_{t-1}$ and $ \wh D^i_t = D^i_{t-1}$, and thus:
 
-$$E^i_t = R_{t-1}^i + P_{t-1}^{i} + L^i_{t-1} - D^i_{t-1} + r (L_{t-1}^i - D_{t-1}^i) + Q_{t-1}^i\Delta X_t$$
+%$$E^i_t = R_{t-1}^i + P_{t-1}^{i} + L^i_{t-1} - D^i_{t-1} + r (L_{t-1}^i - D_{t-1}^i) + Q_{t-1}^i\Delta X_t$$
+
+$$E^i_t = R_{t-1}^i + P_{t-1}^{i} + L^i_{t-1} - D^i_{t-1} + r (L_{t-1}^i - D_{t-1}^i) + Q_{t-1}^i \omega_t$$
 
 We can thus deduce the following recursion formula for equity in the case where no bank has defaulted in the previous period: 
 
+%\begin{equation}\label{eq:eqtdyna}
+%\Leftrightarrow E^i_t = E^i_{t-1} + r (\wh L_{t-1}^i - \wh D_{t-1}^i) + Q_{t-1}^i\Delta X_t
+%\end{equation}
+
 \begin{equation}\label{eq:eqtdyna}
-\Leftrightarrow E^i_t = E^i_{t-1} + r (\wh L_{t-1}^i - \wh D_{t-1}^i) + Q_{t-1}^i\Delta X_t
+\Leftrightarrow E^i_t = E^i_{t-1} + r (\wh L_{t-1}^i - \wh D_{t-1}^i) + Q_{t-1}^i \omega_t
 \end{equation}
 
 \subsection{Stage 3 : balance sheet management}\label{balance_sheet_management}
@@ -575,11 +626,18 @@ In this section we summarize the fundamental equations of the model.
 
 \subsection{Preliminaries}
 
+%\begin{itemize}
+ %   \item Definition of the returns:
+ %   $$\forall l \in \llbracket 1, m \rrbracket,~~\omega_t^l = \frac{X_t^l - X_{t-1}^l}{X_{t-1}^l}.$$
+%    \item No expected losers initial condition
+ %   $$\forall i \in \llbracket 0, n \rrbracket,~~rL_0^i + \sum_{l=1}^{m} Q_0^{il} X_0^l\mu_l \geq rD_0^i.$$
+%\end{itemize}
+
 \begin{itemize}
-    \item Definition of the returns:
-    $$\forall l \in \llbracket 1, m \rrbracket,~~\omega_t^l = \frac{X_t^l - X_{t-1}^l}{X_{t-1}^l}.$$
+    \item Definition of risky assets' dynamics:
+    $$\forall l \in \llbracket 1, m \rrbracket,~~X_t^l = X_{t-1}^l + \omega_{t-1}^l$$
     \item No expected losers initial condition
-    $$\forall i \in \llbracket 0, n \rrbracket,~~rL_0^i + \sum_{l=1}^{m} Q_0^{il} X_0^l\mu_l \geq rD_0^i.$$
+    $$\forall i \in \llbracket 0, n \rrbracket,~~Q_0^{i} \mu_l \geq r(D_0^i - L_0^i).$$
 \end{itemize}
 
 
@@ -613,14 +671,16 @@ In this section we summarize the fundamental equations of the model.
     $$ \forall i \in \llbracket 0, n \rrbracket,~~ \widehat{R}_t^i = R_{t-1}^i + r (\wh L_t^i - \wh D_t^i) + \sum_{j \in \mathcal{D}_{t-1}} \Psi_{t-1}^{ij} \pi_{t-1}^j.$$
     
     \item Update portfolios
-    $$\forall i \in \llbracket 0, n \rrbracket,~~ \widehat{P}_t^i = P_{t-1}^i + Q_{t-1}^i\Delta X_t.$$
+    %$$\forall i \in \llbracket 0, n \rrbracket,~~ \widehat{P}_t^i = P_{t-1}^i + Q_{t-1}^i\Delta X_t.$$
+    $$\forall i \in \llbracket 0, n \rrbracket,~~ \widehat{P}_t^i = P_{t-1}^i + Q_{t-1}^i\omega_t.$$
     
     \item Update equities
     $$\forall i \in \llbracket 0, n \rrbracket,~~ \wh E^i_t = R_{t-1}^i + r (\wh L_t^i - \wh D_t^i) + \sum_{j \in \mathcal{D}_{t-1}} \Psi_{t-1}^{ij} \pi_{t-1}^j + \wh L^i_t + \wh P_t^i - \wh D^i_t.$$
     Developing, we can show that there are three possible sources of losses of equity. Let us consider $i$ given: 
     $$\wh E^i_t = R_{t-1}^i + r (\wh L_t^i - \wh D_t^i) + \sum_{j \in \mathcal{D}_{t-1}} \Psi_{t-1}^{ij} \pi_{t-1}^j + L_{t-1}^i + \wh L_t^i - L_{t-1}^i + \wh P_t^i - \wh D^i_t$$
     Using the fact that $\wh D_t^i = D_{t-1}^i$, we can get the following formula: 
-    $$\wh E^i_t = E^i_{t-1} + \underbrace{r (\wh L_t^i - D_{t-1}^i)}_{\downarrow~net~loans~revenues} + \underbrace{\sum_{j \in \mathcal{D}_{t-1}} \Psi_{t-1}^{ij} \pi_{t-1}^j + \wh L_t^i - L_{t-1}^i}_{defaults} + \underbrace{Q_{t-1}^i\Delta X_t}_{portfolio}.$$
+    %$$\wh E^i_t = E^i_{t-1} + \underbrace{r (\wh L_t^i - D_{t-1}^i)}_{\downarrow~net~loans~revenues} + \underbrace{\sum_{j \in \mathcal{D}_{t-1}} \Psi_{t-1}^{ij} \pi_{t-1}^j + \wh L_t^i - L_{t-1}^i}_{defaults} + \underbrace{Q_{t-1}^i\Delta X_t}_{portfolio}.$$
+    $$\wh E^i_t = E^i_{t-1} + \underbrace{r (\wh L_t^i - D_{t-1}^i)}_{\downarrow~net~loans~revenues} + \underbrace{\sum_{j \in \mathcal{D}_{t-1}} \Psi_{t-1}^{ij} \pi_{t-1}^j + \wh L_t^i - L_{t-1}^i}_{defaults} + \underbrace{Q_{t-1}^i\omega_t}_{portfolio}.$$
 \end{itemize}
 
 
