@@ -485,7 +485,7 @@ Using (\ref{rebal_synthesis}) into (\ref{quantities_bij}), we deduce the new qua
 \subsection{Hypothesis and definitions}
 
 \paragraph{Set of defaulting banks}
-A time $t$, if the capital of a non-empty set of banks to drop below a given threshold, those banks declare bankruptcy at time $t$. Let $\mathcal{D}_t$ be the set of banks that declare bankruptcy at time $t$. Thus : $$j \in \mathcal{D}_{t} \Leftrightarrow \{ \widehat{E}_{t}^i \leq \bar{E}^i \} \cap \{ E_{t-1}^i \geq \bar{E}^i \} $$
+A time $t$, if the capital of a non-empty set of banks to drop below a given threshold, those banks declare bankruptcy at time $t$. Let $\mathcal{D}_t$ be the set of banks that declare bankruptcy at time $t$. Thus : $$j \in \mathcal{D}_{t} \Leftrightarrow \{ \widehat{E}_{t}^j \leq \bar{E}^j \} \cap \{ E_{t-1}^j > \bar{E}^j \} $$
 
 \paragraph{}    
 We also define the set of banks that have defaulted up to time $t+1$ :
@@ -494,6 +494,12 @@ $$\mathcal{D}_{0:t} = \bigcup_{s=0}^{t} \mathcal{D}_s $$
 \paragraph{}
 Symmetrically, we use the notation $\overline{\mathcal{D}_{t}}$ the complementary in the set of banks of $\mathcal{D}_{t}$. We use the same notation for the complementary of $\mathcal{D}_{0:t}$ which we shall then denote by $\overline{\mathcal{D}_{0:t}}$.
 
+\paragraph{Leverage regulatory threshold}
+In order to analyze the effect of a maximum leverage ratio enforced by the regulator, we can decide moreover that any bank which does not satisfy the leverage regulatory threshold is liquidated as a prudential measure. Mathematically let us introduce the leverage regulatory threshold $\lambda^{\star}$, and at all periods banks must satisfy : 
+$$\frac{\mathcal{L}^i_t}{E^i_t} \leq \lambda^{\star} $$
+
+This transforms the definition of the set of defaulting banks : 
+$$j \in \mathcal{D}_{t} \Leftrightarrow \bigg\{ \{ E_t^j \leq \bar{E}^j \}\cap \left( \frac{\mathcal{L}^j_t}{E^j_t} > \lambda^{\star} \right) \bigg\}  \bigcap \bigg\{ \{ E_{t-1}^j > \bar{E}^j \}\cap \left( \frac{\mathcal{L}^j_{t-1}}{E^j_{t-1}} \leq \lambda^{\star} \right) \bigg\}$$
 
 \paragraph{Proceedings from liquidation and claim coefficient}
 Let us firstly introduce two quantities that we will use across this section. 
@@ -1002,10 +1008,41 @@ $$Q_0^i = \frac{P_0^i}{x_0} q^i.$$
 %&\forall i \in \llbracket 1, m \rrbracket , &\kappa + w_i \leq 0
 %\end{eqnarray*}
 
+\section{Notes}
+
+\paragraph{}
+Ajouter une n+1 ème banque ? Qui permet d'avoir un réseau prêteur net ou un réseau emprunteur net : correspond ainsi au reste du monde (on peut alors regarder comme pertes effectuées au totale l'equity du reste du monde qui correspond bien aux pertes totales dans le réseau). 
+
+\paragraph{}
+Commencer par rajouter dans la liste des réseaux le réseau en Etoile et Erdös Rényi. L'hétérogénéité sera pour un second temps. On fait donc de l'inférence plus sur les paramètres. Faire un cas homogène sur le bilan des banques (même equity pour tout le monde, même paramètres alpha pour tout le monde). Après on peut essayer des choses plus hétérogènes (banques plus ou moins riches, banques plus ou moins risk seeking avec le alpha). 
+
+Pour l'hétérogénéité : Distribution simple sur les prêts, mettons 3 valeurs possibles (1000, 5000, 10000) ou autre chose simples. 
+
+Voir aussi l'effet des facteurs de perte xi (=facteur de difficulté du monde, contagion plus importante puisque plus de pertes)
+
+\paragraph{}
+Voir aussi l'effet du lambda star (régulation sur le leverage). On pourrait également imposer le ratio de leverage dans la dynamique à chaque étape en les forcant à faire défaut. Impose de rédéfinir le problème d'optimisation de comportement des banques. Non en fait puisque passer du cash en portefeuille ne change rien au leverage, donc on peut décider de casser les banques qui ne respectent plus cela, revient à "tuer" les malades, sauf que le "cadavre diffuse du germe" car obligé de liquider donc fait perdre. Fermer les banques trop risquées peut poser problème. Même s'il faut garder à l'esprit que les banques ne peuvent pas se recapitaliser. On peut soit modifier les conditions au temps 0, ou avoir une action en injectant du capital.
+
+\paragraph{}
+Voir aussi l'effet en prenant les mêmes equity pour tout le monde de monter cette valeur, le risque reste le même en valeur absolue mais 
+
+
+Induire peut être un début de contrôle, déjà via le lambda. 
+
+\paragraph{Synthèse}
+Sur ces 4 graphes. Déjà equity constantes puis equity qui suivent une certaine fonction. Pour l'instant nombre de banques mortes cumulées et total des actifs disparues. Voir un peut la politique prudentielle : avec le leverage
+
+\paragraph{}
+Essayer un paramètre sur le réseau circulaire.
+
+\paragraph{}
+Essayer de faire du MC sur les 
+
+
+
 
 
 \end{appendices}
-
 
 \printbibliography
 
