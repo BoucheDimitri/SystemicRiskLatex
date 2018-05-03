@@ -765,11 +765,24 @@ Although we need to initialize such that the following constraints are satisfied
 \begin{itemize}
 \item The condition (\ref{eq:nolosers}) : $$Q_0^{i} \mu \geq r(D_0^i - L_0^i).$$
 \item The reserve rule (\ref{eq:rsvrule}): $$R_0^i \geq r(D_0^i - L_0^i).$$
-\item A leverage objective : $$ \frac{\mathcal{L}_0^i}{E_0^i} \leq \beta^i \lambda^{\star}.$$ Where $\lambda^{\star}$ is a regulatory leverage threshold and $\beta \in [0, 1]$ is a behavior parameter for the banks. This condition can be reformulated as : 
+
+\item A liquid asset postivity rule : Equity must be chosen such that the liquid assets ($P_0^i + R_0^i$) are positive, which is equivalent to : 
+$$E_0^i \geq L_0^i - D_0^i $$
+\item A leverage objective : $$ \frac{\mathcal{L}_0^i}{E_0^i} \leq \beta^i \lambda^{\star}.$$ Where $\lambda^{\star}$ is a regulatory leverage threshold and $\beta$ is a behavior parameter for the banks.
+Since $\mathcal{L}_0^i = E_0^i + D_0^i$, the leverage objective can be rewritten as : 
+$$ 1 + \frac{D_0^i}{E_0^i} \leq \beta^i \lambda^{\star}.$$
+
+Since $\frac{D_0^i}{E_0^i} \geq 0$, we must have :
+$$\beta^i \lambda^{\star} \geq 1 \Leftrightarrow \beta^i \in [\frac{1}{\lambda^{\star}}, 1 ].$$
+This interval being valid since $\lambda^{\star} \geq 1.$
+
+The leverage condition can be reformulated as : 
 $$ E_0^i \geq \frac{D_0^i}{\lambda^{\star}\beta^i - 1}.$$
 Let us define the leverage lower bound on equity by : 
-$$ E_0^{i \star} = \frac{D_0^i}{\lambda^{\star}\beta^i - 1}.$$
+$$ E_0^{i \star} = \frac{D_0^i}{\lambda^{\star}\beta^i - 1}.$$ 
 \end{itemize}
+
+
 
 \subsubsection{Rewriting of the first constraint in terms of portfolio}
 
@@ -834,8 +847,8 @@ $$E_0^i\geq (D_0^i - L_0^i)(r\frac{x_0}{\tilde{\mu}^i} + r - 1).$$
 Let us define then the quantity :
 $$\tilde{E}_0^i = (D_0^i - L_0^i)(r\frac{x_0}{\tilde{\mu}^i} + r - 1).$$
 
-We must then choose the initial equity such that it implies enough liquid asset via the above condition and such that it also respects the leverage objective. This can be stated synthetically using the following inequality : 
-$$E_0^i\geq \max (\tilde{E}_0^i, E_0^{i \star}) $$
+We must then choose the initial equity such that it implies enough liquid asset via the above condition and such that it also respects the leverage objective. To finish with, the implied sum of liquid assets must be positive. This can be stated synthetically using the following inequality : 
+$$E_0^i\geq \max (\tilde{E}_0^i, E_0^{i \star}, L_0^i - D_0^i ) $$
 
 \subsection{Defining portfolio and reserves}
 
@@ -1008,35 +1021,79 @@ $$Q_0^i = \frac{P_0^i}{x_0} q^i.$$
 %&\forall i \in \llbracket 1, m \rrbracket , &\kappa + w_i \leq 0
 %\end{eqnarray*}
 
-\section{Notes}
-
-\paragraph{}
-Ajouter une n+1 ème banque ? Qui permet d'avoir un réseau prêteur net ou un réseau emprunteur net : correspond ainsi au reste du monde (on peut alors regarder comme pertes effectuées au totale l'equity du reste du monde qui correspond bien aux pertes totales dans le réseau). 
-
-\paragraph{}
-Commencer par rajouter dans la liste des réseaux le réseau en Etoile et Erdös Rényi. L'hétérogénéité sera pour un second temps. On fait donc de l'inférence plus sur les paramètres. Faire un cas homogène sur le bilan des banques (même equity pour tout le monde, même paramètres alpha pour tout le monde). Après on peut essayer des choses plus hétérogènes (banques plus ou moins riches, banques plus ou moins risk seeking avec le alpha). 
-
-Pour l'hétérogénéité : Distribution simple sur les prêts, mettons 3 valeurs possibles (1000, 5000, 10000) ou autre chose simples. 
-
-Voir aussi l'effet des facteurs de perte xi (=facteur de difficulté du monde, contagion plus importante puisque plus de pertes)
-
-\paragraph{}
-Voir aussi l'effet du lambda star (régulation sur le leverage). On pourrait également imposer le ratio de leverage dans la dynamique à chaque étape en les forcant à faire défaut. Impose de rédéfinir le problème d'optimisation de comportement des banques. Non en fait puisque passer du cash en portefeuille ne change rien au leverage, donc on peut décider de casser les banques qui ne respectent plus cela, revient à "tuer" les malades, sauf que le "cadavre diffuse du germe" car obligé de liquider donc fait perdre. Fermer les banques trop risquées peut poser problème. Même s'il faut garder à l'esprit que les banques ne peuvent pas se recapitaliser. On peut soit modifier les conditions au temps 0, ou avoir une action en injectant du capital.
-
-\paragraph{}
-Voir aussi l'effet en prenant les mêmes equity pour tout le monde de monter cette valeur, le risque reste le même en valeur absolue mais 
 
 
-Induire peut être un début de contrôle, déjà via le lambda. 
 
-\paragraph{Synthèse}
-Sur ces 4 graphes. Déjà equity constantes puis equity qui suivent une certaine fonction. Pour l'instant nombre de banques mortes cumulées et total des actifs disparues. Voir un peut la politique prudentielle : avec le leverage
 
-\paragraph{}
-Essayer un paramètre sur le réseau circulaire.
 
-\paragraph{}
-Essayer de faire du MC sur les 
+
+
+
+
+%\section{Notes}
+
+
+
+%\paragraph{A faire en priorité}
+%
+%\othernote{Commencer par les indicateurs sur le réseau lui même pour trouver des facteurs de fragilité : nombre de noeuds, degré moyen (nombre d'arrêtes sur nombre de noeuds, somme des poids sur nombre de noeud). Ensuite profil temporel des défauts}
+%
+%\othernote{Commencer par des bilans les plus normés possibles. On fixe E et la valeurs des dettes et des loans. Le seul truc qui change est la répartition des connectivités. Voir les différents réseaux (en étoile, complets, en cercle, ER)}
+%
+%\othernote{Question impliquée : comment réparti on les loans et debts. Ca va nécéssairement dépendre du graphe puisque les dettes de l'un sont les prêts de l'autre donc il faut que ce soit symétrique}
+
+%
+%
+%\othernote{Ajouter le défaut avec le rewiring interne}
+%
+%\othernote{Pour l'initialisation, peut être a t on envie d'avoir des equity fixés et d'initialiser selon cette contrainte? Ou alors selon un distribution fixée pour les equity}
+%
+%\othernote{Démarche graphe d'abord puis equity, ou alors structure d'equity données et on fait le graphe en fonction}
+%
+%\othernote{On peut séparer la phase d'initialisation de qui est connecté à qui et de la valeur des poids}
+%
+%\othernote{Fondamentalement comment peut on s'assurer que l'on construit des réseaux qui vérifient la condition de viabilité, ie l'équation 1 : ajouter cette réflexion}
+%
+%\othernote{Peut être faut-il déjà tester des structures mécaniques styles réseau en étoile, réseau en ligne, réseau complet etc...}
+%
+%\othernote{Faire plusieurs simus pour une même structure de graphe sur un nombre donné d'itération. Voir la répartition des défauts au cours du temps pour voir s'ils clusterent pour détecter des évènement systémiques. Si on a des clusters bien définis on peut étudier la durée des épidémies (un défaut est lié à une crise s'il y a des défaut avant}
+%
+%\othernote{Que mesure-t-on ? Le taux de survie ? Les pertes cumulées LIEES AUX DEFAUTS ? (capital détruit par les défauts en cumulé, normalisé par la richesse initiale = la somme des equity initiales). Faut-il normaliser les loss}
+%
+%\othernote{Utiliser des mesures de concentration ? Mesure de degré moyen du graphe au cours du temps ? Cette quantité mesure-t-elle la fragilité du graphe ? Y a t il des valeurs critiques et des valeurs safes ? Le système a t elle tendance à être attirée par les états critiques ? Alors que on était parti d'un état où ce n'était pas critique}
+%
+%\othernote{Question impliquée : quels sont les indicateurs de fragilité financière utilisés dans la littérature}
+%
+%\othernote{Parmi les banques qui ont fait défaut : quelles étaient elles ? Etaient elles petites ou grosses ? Etaient elles bien connectées ou peut connectées ? Avaient-elles pris des risques : selon l'état initial quelles sont les banques les plus susceptibles de faire crasher le réseau ?}
+
+%
+%\paragraph{}
+%Ajouter une n+1 ème banque ? Qui permet d'avoir un réseau prêteur net ou un réseau emprunteur net : correspond ainsi au reste du monde (on peut alors regarder comme pertes effectuées au totale l'equity du reste du monde qui correspond bien aux pertes totales dans le réseau). 
+%
+%\paragraph{}
+%Commencer par rajouter dans la liste des réseaux le réseau en Etoile et Erdös Rényi. L'hétérogénéité sera pour un second temps. On fait donc de l'inférence plus sur les paramètres. Faire un cas homogène sur le bilan des banques (même equity pour tout le monde, même paramètres alpha pour tout le monde). Après on peut essayer des choses plus hétérogènes (banques plus ou moins riches, banques plus ou moins risk seeking avec le alpha). 
+%
+%Pour l'hétérogénéité : Distribution simple sur les prêts, mettons 3 valeurs possibles (1000, 5000, 10000) ou autre chose simples. 
+%
+%Voir aussi l'effet des facteurs de perte xi (=facteur de difficulté du monde, contagion plus importante puisque plus de pertes)
+%
+%\paragraph{}
+%Voir aussi l'effet du lambda star (régulation sur le leverage). On pourrait également imposer le ratio de leverage dans la dynamique à chaque étape en les forcant à faire défaut. Impose de rédéfinir le problème d'optimisation de comportement des banques. Non en fait puisque passer du cash en portefeuille ne change rien au leverage, donc on peut décider de casser les banques qui ne respectent plus cela, revient à "tuer" les malades, sauf que le "cadavre diffuse du germe" car obligé de liquider donc fait perdre. Fermer les banques trop risquées peut poser problème. Même s'il faut garder à l'esprit que les banques ne peuvent pas se recapitaliser. On peut soit modifier les conditions au temps 0, ou avoir une action en injectant du capital.
+%
+%\paragraph{}
+%Voir aussi l'effet en prenant les mêmes equity pour tout le monde de monter cette valeur, le risque reste le même en valeur absolue mais 
+%
+%
+%Induire peut être un début de contrôle, déjà via le lambda. 
+%
+%\paragraph{Synthèse}
+%Sur ces 4 graphes. Déjà equity constantes puis equity qui suivent une certaine fonction. Pour l'instant nombre de banques mortes cumulées et total des actifs disparues. Voir un peut la politique prudentielle : avec le leverage
+%
+%\paragraph{}
+%Essayer un paramètre sur le réseau circulaire.
+%
+%\paragraph{}
+%Essayer de faire du MC sur les 
 
 
 
