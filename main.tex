@@ -9,6 +9,8 @@
 \usepackage{stmaryrd}
 \usepackage{bbm}
 \usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{subfig}
 \usepackage{amsmath}
 \usepackage[toc,page]{appendix} 
 \usepackage{graphicx}
@@ -298,10 +300,10 @@ Q_0^{i} \mu \geq r(D_0^i - L_0^i).
 %If $\rho$ is large enough we are sure that each bank can at least pay its interest rates to other banks. On the other hand this may be too restrictive since it will constrain banks to over-sell their portfolio unnecessarily.
 
 \paragraph{Reserve rule}
-We want to ensure that banks can pay their interest rates the next day. We thus introduce the following regulatory rule imposed by some prudential authority.
+We want to ensure that banks can pay their interest rates the next day. We thus introduce the following regulatory rule imposed by some prudential authority. We take the positive part of the second term since lending more than on borrowed does not yield the right to have negative reserves.
 
 \begin{equation}\label{eq:rsvrule}
-R_t^i + r(L_t^i - D_t^i) \geq 0
+R_t^i + r \max(0,~(L_t^i - D_t^i)) \geq 0
 \end{equation}
 
 %\othernote{Renvoie à un autre problème qu'il faut préciser en amont, dans ce modèle, nous ne considérons qu'une seul type de défaut qui est le défaut fondamental (equity negative, ou vision comptable). L'autre type de défaut est le défaut de liquidité nous ne le considérons pas ici par construction. TERME ECONOMIQUE APPROPRIE : Notion de crise de solvabilité versus crise de liquidité (insolvency and illiquidity}.
@@ -311,7 +313,7 @@ R_t^i + r(L_t^i - D_t^i) \geq 0
 \paragraph{}
 To prove this, let us distinguish between two case.
 \begin{itemize}
-    \item $\widehat D^i_t \leq \widehat L^i_t$. In that case, a bank only receives interest rates and thus automatically complies with the reserve rule. In other words, since $R_t^i \geq 0$
+    \item $\widehat D^i_t \leq \widehat L^i_t$. In that case, a bank only receives interest rates and thus automatically complies with the reserve rule since its reserves are positive (we do not authorize negative reserves). In other words, since $R_t^i \geq 0$
     $$ \widehat L_t^i - \widehat D_t^i \geq 0 \Rightarrow r(\widehat L_t^i - \widehat D_t^i) \geq 0 \Rightarrow \widehat R_t^i + r(\widehat L_t^i - \widehat D_t^i) \geq 0.$$
     \item $\widehat D^i_t > \widehat L^i_t$. The bank has not defaulted in $t$, thus:
     $$\widehat E^i_t > \bar{E}^i \Rightarrow \widehat E^i_t > 0 \Leftrightarrow \widehat{R}^i_t + \widehat{P}^i_t + \widehat L^i_t - \widehat D^i_t > 0.$$
@@ -335,7 +337,7 @@ Thus, this rule enables us to avoid liquidity defaults, and being solvent is a s
 \paragraph{Portfolio management condition}
 Since the value of the assets in the portfolio will vary, so will the size of the portfolio in relation to the rest of the balance-sheet quantities. As a basic rule of management, we may state that each bank wants to maximize its investment in the portfolio under the constraint that it amounts to a given fraction of the total of its assets $\mathcal{A}_t$ and that it respects the reserve rule. Let us define then by $\alpha^i$ the target investment percentage of bank $j$ which we can interpret as a behavioral parameter. We assume for now that the share of wealth invested in each asset remains constant. As a consequence, we  can formulate the problem in term of $P_t$ only :
 
-$$\max_{\substack{P_t^i \leq \alpha^i \mathcal{A}_t^i \\ R_t^i + r(L_t^i - D_t^i) \geq 0 \\ P_t^i + R_t^i = \widehat{P}_t^i + \widehat{R}_t^i}} P_t^i$$
+$$\max_{\substack{P_t^i \leq \alpha^i \mathcal{A}_t^i \\ R_t^i + \max(0,~r(L_t^i - D_t^i)) \geq 0 \\ P_t^i + R_t^i = \widehat{P}_t^i + \widehat{R}_t^i}} P_t^i$$
 
 
 \subsection{Stage 1 : updates}\label{updates}
@@ -426,8 +428,8 @@ We can thus deduce the following recursion formula for equity in the case where 
 Let us distinguish two cases
 
 \begin{itemize}
-    \item $\widehat{R}_t^i < r(\wh D_t^i - \wh L_t^i)$ (reserve rule not matched)
-    \item $\widehat{R}_t^i \geq r(\wh D_t^i - \wh L_t^i)$ (reserve rule matched)
+    \item $\widehat{R}_t^i < \max(0,~r(\wh D_t^i - \wh L_t^i))$ (reserve rule not matched)
+    \item $\widehat{R}_t^i \geq \max(0,~r(\wh D_t^i - \wh L_t^i))$ (reserve rule matched)
 \end{itemize}
 
 Let us also define the portfolio valuation objective $P_t^{j}$ which corresponds to the valuation of the portfolio the bank wish to reach.
@@ -438,15 +440,15 @@ We distinguish again different cases :
 \begin{itemize}
     \item $\widehat{P}_t^i > \alpha^i \mathcal{A}_t^i$. In that case, a portion $\widehat{P}_t^i - \alpha^i \mathcal{A}_t^i$ of the portfolio must be sold. No other actions are required, thus:
      $$P_t^i = \alpha^i \mathcal{A}_t^i.$$
-    \item $\widehat{P}_t^i \leq \alpha^i \mathcal{A}_t^i$. In that case the bank wants to increase its portfolio to saturate the constraint if possible given the reserve rule. Thus: $$P_t^{i} = \min \left(\alpha^i \mathcal{A}_t^i,~~\widehat{P}_t^i + \widehat{R}_t^i - r(\wh D_t^i - \wh L_t^i) \right).$$
+    \item $\widehat{P}_t^i \leq \alpha^i \mathcal{A}_t^i$. In that case the bank wants to increase its portfolio to saturate the constraint if possible given the reserve rule. Thus: $$P_t^{i} = \min \left(\alpha^i \mathcal{A}_t^i,~~\widehat{P}_t^i + \widehat{R}_t^i - \max(0,~r(\wh D_t^i - \wh L_t^i)) \right).$$
 \end{itemize}
 
 \paragraph{Reserve rule not matched}
 The bank have to sell a portion of its portfolio to comply with the reserve rule. However, it may sell more if its portfolio is still too large according to the financial choice. Let us distinguish two cases :
 \begin{itemize}
-    \item $\widehat{P}_t^i + \widehat{R}_t^i - r(\wh D_t^i - \wh L_t^i) \leq \alpha^i \mathcal{A}_t^i$. In that case, the bank sells only the amount necessary to comply with the reserve rule --- since $\widehat{R}_t^i - r(\wh D_t^i - \wh L_t^i) < 0$ this is indeed selling . As a consequence: 
-    $$ P_t^{i} = \widehat{P}_t^i + \widehat{R}_t^i - r(\wh D_t^i - \wh L_t^i).$$
-    \item $\widehat{P}_t^i + \widehat{R}_t^i - r(\wh D_t^i - \wh L_t^i) > \alpha^i \mathcal{A}_t^i$. In that case, the bank sells enough portfolio assets to comply with the financial choice. Which is enough to comply also with the reserve rule since we have: $\widehat{P}_t^i - \alpha^i \mathcal{A}_t^i > - \widehat{R}_t^i + r(\wh D_t^i - \wh L_t^i) $. As a consequence: 
+    \item $\widehat{P}_t^i + \widehat{R}_t^i - \max(0,~r(\wh D_t^i - \wh L_t^i)) \leq \alpha^i \mathcal{A}_t^i$. In that case, the bank sells only the amount necessary to comply with the reserve rule --- since $\widehat{R}_t^i - \max(0,~r(\wh D_t^i - \wh L_t^i)) < 0$ this is indeed selling . As a consequence: 
+    $$ P_t^{i} = \widehat{P}_t^i + \widehat{R}_t^i - \max(0,~r(\wh D_t^i - \wh L_t^i)).$$
+    \item $\widehat{P}_t^i + \widehat{R}_t^i - \max(0,~r(\wh D_t^i - \wh L_t^i)) > \alpha^i \mathcal{A}_t^i$. In that case, the bank sells enough portfolio assets to comply with the financial choice. Which is enough to comply also with the reserve rule since we have: $\widehat{P}_t^i - \alpha^i \mathcal{A}_t^i > - \widehat{R}_t^i + \max(0,~r(\wh D_t^i - \wh L_t^i)) $. As a consequence: 
     $$ P_t^i = \alpha^i \mathcal{A}_t^i.$$
     
 \end{itemize}
@@ -455,7 +457,7 @@ The bank have to sell a portion of its portfolio to comply with the reserve rule
 We can actually unify all four cases in the following formula : 
 
 \begin{equation}\label{rebal_synthesis}
-P_t^i = \min(\widehat{P}_t^i + \widehat{R}_t^i - r(\wh D_t^i - \wh L_t^i),~~\alpha^i \mathcal{A}_t^i).
+P_t^i = \min(\widehat{P}_t^i + \widehat{R}_t^i - \max(0,~r(\wh D_t^i - \wh L_t^i)),~~\alpha^i \mathcal{A}_t^i).
 \end{equation}
 
 The new amount of reserves is also deduced easily from $P_t^i$: 
@@ -764,7 +766,7 @@ We describe in this appendix how we go about initializing the balance sheets qua
 Although we need to initialize such that the following constraints are satisfied:
 \begin{itemize}
 \item The condition (\ref{eq:nolosers}) : $$Q_0^{i} \mu \geq r(D_0^i - L_0^i).$$
-\item The reserve rule (\ref{eq:rsvrule}): $$R_0^i \geq r(D_0^i - L_0^i).$$
+\item The reserve rule (\ref{eq:rsvrule}): $$R_0^i \geq \max(0,~ r(D_0^i - L_0^i)).$$
 
 \item A liquid asset postivity rule : Equity must be chosen such that the liquid assets ($P_0^i + R_0^i$) are positive, which is equivalent to : 
 $$E_0^i \geq L_0^i - D_0^i $$
@@ -1098,6 +1100,136 @@ $$Q_0^i = \frac{P_0^i}{x_0} q^i.$$
 
 
 
+
+%Notes
+
+% L'oublie d'une partie positive dans la reserve rule autorisait les preteurs nettes à avoir des reserves négatives pour investir plus dans le portefeuille. Je l'ai corrigé.
+
+% On trouve que les structures de réseaux fragiles ne sont pas les mêmes selon le leverage que l'on autorise : les structures plus connectées sont plus robustes lorsque l'on autorise seulement un leverage "raisonnable" (3 - 5), en revanche lorsque l'on passe à des leverage plus élevées (7 - 10) les structures les moins connectées deviennent les plus fragiles avec des évènements faisant tomber tout le réseau 
+
+%La diversification en  termes d'assets rend plus robuste les réseau et diminue la contagion (on s'y attendait)
+
+% Faudrait-il normaliser la taille des dettes en fonction du nombre moyen de connections du réseau ? On aurait alors des bilans plus comparables en quantités. En l'état la part de dette/loans dans le bilan des institutions dépend beaucoup de la connectivité des graphes, peut être cela biaise-t-il l'analyse. 
+% STATS DESC sur les initialisations.
+
+
+
+
+% #### NOTES DE NOTRE RENCONTRE DU 14/05/2018 #####
+% Pour la quantité de normalisation, voir à partir d'un certain graphe aléatoire quelle est la taille espérée des bilans et ainsi normaliser par cette taille espérée. 
+
+% Ou normalisation par la "connectevité" (nombre moyen de connection) à graphe donné (commencer par ER).
+
+%Essayer quand même plusieurs scenari
+
+%Calcul d'indicateurs de probabilités tels que probabilité que tel pourcentage des banques ait fait défaut en moins de tel nombre de périodes. Permet d'avoir la robustesse en moyennant sur les scenaris aussi. 
+
+% Faire les CDFs en moyennant sur les scenaris, voir comment elles croissent, ceux qui croissent plus vite sont 
+
+% Tracer un indicateur moyenné sur plusieurs scenario de prix en fonction du mapping de p de ER.
+
+% Les CDFS en fonction d'un scenario de prix donné constituent un bon exemple introductif pour voir comment marche le modèle et voir que les histoires sont compréhensible. Cela amène l'étude scientifique/statistique indépendante des scenari. (Exemple vs fait stylisé)
+
+% Même exercice sur l'option règlement interne : voir si c'est jouable en termes de puissance de calcul/temps de calcul.
+
+% Faire les estimations pour le temps de calcul pour avoir une idée qui puisse. 
+
+% INDICATEURS
+
+\section{Indicateurs}
+
+\subsection{Méthodologie}
+
+Voir sur quelques exemples
+
+\subsection{Banques}
+\begin{itemize}
+
+	\item Nombre de défaut : soit la version courbe (CDF des défauts)ou alors version ponctuelle au temps t combien de banques ont fait défaut ? 
+	
+	\item Somme des pertes en capital dûes uniquement aux banqueroutes. Deux canaux  : pertes sur les prêts morts, pertes sur la différence de vente du portefeuille dûe aux fire sales.
+	
+\end{itemize}
+
+\subsection{Réseau}
+
+\begin{itemize}
+
+	\item Nombre d'arrêtes totale
+	
+	\item Evolution de la structure même (proxy : l'évolution du nombre moyen de contreparties) : comment évolue le degré moyen ? A mettre en relation avec l'indicateur précédent. Regarder aussi les degrés max et les degrés min ainsi que la variance (hétérogénéité des degrés au sein du réseau). Version courbe : distribution du degré. 
+	
+	\item Version plus avancée : y a-t-il des cliques qui apparaissent ? Si on part d'un réseau complètement connecté, il converge vers quoi comme réseau ? Faire de la détéction de cliques. Y a-t-il des composantes clusters qui apparaissent (spectral clustering). En partant d'un réseau donné, en moyenne va-t-il se scinder en 3, 4... composantes peu reliées entre elles ou non ? 
+
+
+	
+	
+\end{itemize}
+
+
+\section{Simulations}
+
+\paragraph{}
+Au regard du nombre de degré de liberté et des temps de calcul, il faut cadrer nos simulations.
+
+\begin{itemize}
+    \item Pour le côté Monte Carlo sur les trajectoires de prix (le plus couteux), on peut limiter l'aléa en fixant une fois pour toutes $m=2$. Cela fait que l'on peut espérer une "convergence" plus rapide que si l'on avait plus de sources d'aléas.
+    
+    \item Pour l'effet de la diversification, se limiter à deux cas : totale diversification avec $(0.5, 0.5)$ de quantités relatives pour tout le monde, et le cas concentration maximale avec $(1, 0)$ ou $(0, 1)$ equirépartis aléatoirement sur les banques. 
+    
+    \item Pour les valeurs du leverage, un petit nombre de valeurs significatives, $(3, 5, 10)$ ou $(3, 5, 7, 10)$.
+    
+    \item Pour les autres hyperparamètres (hors paramètres de graphes dont on veut étudier l'effet), il faut les fixer, pas vraiment d'autres choix.
+\end{itemize}
+
+
+\section{Notes}
+
+\paragraph{}
+Choisir un vocabulaire spécifique pour les deux sources d'aléas : scenarios/trajectoire de prix (sampled price trajectories) et configuration initiale (initial conditions). "Full sample" pour les deux à la fois, ou "sample pair"
+
+\paragraph{ le graphe des averages degrees :}
+
+\begin{itemize}
+\item Y a t-il une sorte de limite pour le leverage = 10 ? Faire sur des périodes plus longues si on atteint une limite. Dépend elle de la connectivité initiale ? Comment depend elle du leverage ? Cette limite est-elle 0 ? 
+\end{itemize}
+
+
+\paragraph{Sur le graphe des cumulatives defaults :}
+\begin{itemize}
+\item Les croisements sont -ils des artefacts de l'aléatoire ?
+Lambda star : quantité max de risque autorisée. 
+\item On peut faire des variantes sur le beta : tout le monde est à lambda star, ou tout le monde est réparti uniformément entre 1 et lambda star ?
+\item Pour chacune des courbes, compter deux paniers de défauts : +1 parce que la banque se sont cassé la gueule, +1 dans l'autre pour les défauts liés au leverage. La différence vient-elle du fait que le régulateur enlève plus de monde ou parce que c'est structurellement plus de cassage de gueule.
+\item A paramètre ER (graphe) donné, comment évolue les défauts en fonctions de lambda star ?
+\end{itemize}
+
+\paragraph{Sur le calcul de la perte :}
+\begin{itemize}
+\item Les pertes sur les fire sale, voire à ne pas tout compter en fonction de ce qui est regagné via la liquidation.
+\item Mettre en fraction de la valeur initiale du réseau
+\item Interprétation comme perte pour le reste du monde (sur les dépots)
+\end{itemize}
+
+\paragraph{Sur les probas}
+
+\begin{itemize}
+\item On peut se fixer un seuil de pourcentage du réseau mort correspondant à un évènement systémique et dire à telle période, tel réseau dépasse la proba à 0.5 (seuil arbitraire à déterminer) de faire une crise systémique.
+\item Voir sensibilité au paramètre de départ
+
+\end{itemize}
+
+
+\paragraph{}
+
+Idée : fixer un horizon temporelle et faire des graphes en 3d en fonction de lambda, le p du graphe, et l'indicateur en diminuant le nombre d'échantillonage.
+
+Enregistrer juste ce qui est utile pour pouvoir aller plus vite.
+
+\begin{figure}
+  \centering
+  \includegraphics[scale=0.3]{Figure_1.pdf}
+\end{figure}
 
 \end{appendices}
 
